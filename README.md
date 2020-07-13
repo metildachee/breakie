@@ -51,3 +51,11 @@ Sellers can visit the site to share what they're cooking for the day.
 3. Entice people to actually use the app
 4. Allow sharing on Instagram stories
 
+### Design peeks
+Who are your end users?
+1. Non-techy people
+2. Common workers
+=> User interface should be simple and straight forward
+
+Color schemes
+1. Generic: orange... Community-ish
