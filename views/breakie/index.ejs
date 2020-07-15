@@ -1,0 +1,17 @@
+<% if (currentUser == null) { %>
+    <a href="/auth/login">Login</a>
+<% } else { %>
+    <p>Hello! <%= currentUser.username %> </p>
+    <a href="/breakie/new">Create breakie!</a>
+    <a href="/auth/logout">Logout</a>
+<% } %>
+
+
+<% breakies.forEach( breakie => { %>
+    <div>
+        <%= breakie.name %>
+        $<%= breakie.price %>.00
+        <%= breakie.creator.address %> 
+        <a href="/breakie/show/<%= breakie._id %>">Makan!</a>
+    </div>
+<% }) %>

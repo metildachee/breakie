@@ -1,0 +1,26 @@
+<%= breakie.name %>
+<%= breakie.desc %>
+<% breakie.ingredients.forEach( ing => { %>
+    <%= ing.type %>
+<% }) %>
+<%= breakie.qty %>
+<span id="price"><%= breakie.price %></span>
+<%= breakie.cuisine.type %>
+<%= breakie.creator.username %>
+<%= breakie.creator.address %>
+<input type="number" value="1" min="1" id="qty" required>
+Price: $<span id="totalPrice">0</span>
+<form action="breakie/purchase/:id" method="post">
+    <button type="submit">Purchase</button>
+</form>
+
+<% if (currentUser != null && currentUser._id == breakie.creator._id ) { %>
+    <a href="edit/<%= breakie._id %>">Edit</a>
+<% } %>
+
+<script>
+    document.getElementById("qty").addEventListener('change', handler);
+    function handler(event) {
+        document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);
+    }
+</script>

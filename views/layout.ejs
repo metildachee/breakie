@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakie!</title>
+</head>
+<header>
+
+    <% if (alerts.error) { %> 
+        <% alerts.error.forEach( err => { %> 
+            <%= err %> 
+        <% }) %>
+    <% } %>
+    <% if (alerts.success) { %> 
+        <% alerts.success.forEach( succ => { %> 
+            <%= succ %> 
+        <% }) %>
+    <% } %>
+    <h1>Breakie!</h1>
+</header>
+<body>
+    <div class="container">
+        <%- body %>
+    </div>
+</body>
+</html>

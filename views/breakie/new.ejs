@@ -1,0 +1,20 @@
+<form action="/breakie/new" method="post">
+    <label for="name"></label>
+    <input type="text" name="name" placeholder="Pork congee" required>
+    <label for="desc"></label>
+    <input type="text" name="desc" placeholder="A super delicious dish" required>
+    <label for="ingredients"></label>
+    <% ingredients.forEach( ingre => { %>
+        <input type="checkbox" name="ingredients" value="<%= ingre._id %>"><%= ingre.type %>
+    <% }) %>
+    <label for="qty">Quantity</label>
+    <input type="number" name="qty">
+    <label for="price">Price</label>
+    <input type="number" name="price">
+    <select name="cuisine" id="">
+        <% cuisines.forEach( cuisine => { %>
+            <option value="<%= cuisine._id %>"><%= cuisine.type %></option>
+        <% }) %>
+    </select>
+    <button type="submit">Publish</button>
+</form>
