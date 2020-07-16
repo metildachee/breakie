@@ -43,7 +43,7 @@ router.get("/show/:id", (req, res) => {
     catch(err => console.log(err) )
 })
 
-router.get("/purchase/:id", async (req, res) => {
+router.post("/purchase/:id", (req, res) => {
     // this button is pressed when the person wants to purchase
     // an order should be made
     // we will assume to be a cash purchase for now
@@ -53,6 +53,14 @@ router.get("/purchase/:id", async (req, res) => {
 
 //     let breakie = Breakies.findById(req.params.id);
 //     Orders.create({ buyerEmail})
-    res.send("hello world");
+    console.log(req.body);
+    if (req.body.buyerContact) {
+        console.log("this person did not login");
+    }
+    else {
+        console.log("this person logged in");
+    }
+    res.redirect("/");
+    console.log("I have redirected");
 })
 module.exports = router;

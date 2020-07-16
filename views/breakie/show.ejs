@@ -37,46 +37,52 @@
 <% } %>    
 
 <script>
-    document.getElementById("qty").addEventListener('change', updateTotalPrice);
-    function updateTotalPrice(event) {
-        document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);
-    }
+    document.getElementById("qty").addEventListener('change', updateTotalPrice => {
+        document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);    
+    });
+
     if (document.getElementById("immediatePost") != null) {
-        document.getElementById("immediatePost").addEventListener('click', handler);
+        document.getElementById("immediatePost").addEventListener('click', postRequest);
     }
 
     if (document.getElementById("submitBtn") != null) {
-        document.getElementById("submitBtn").addEventListener('click', checkLogin);
+        document.getElementById("submitBtn").addEventListener('click', askForContacts);
     }
 
-    function handler() { console.log("immediately post"); }
+    function postRequest() {
+        let breakieId = window.location.href.split("show/")[1];
+        let obj = {
+            price: document.getElementById("totalPrice").textContent,
+            items: [{
+                breakie: breakieId,
+                qty: parseInt(document.getElementById("qty").value)
+            }]
+        };
+        if (document.getElementById("contactInfo")) // this person is not logged in
+            obj.buyerContact = document.getElementById("contactInfo").value;
+        $.post(`/breakie/purchase/${breakieId}`, obj);
+    }
 
-    function checkLogin(event) {
-        console.log("button clicked");
-        if (document.getElementById("contactInfo") || typeof currentUser != "undefined") {
-            console.log("we will do a post request here");
-        }
-        else if (typeof currentUser == "undefined") { // this person is not logged in
-            let phoneNumber = document.createElement("input");
-            let para = document.createElement("p");
-            let submitBtn = document.createElement("button");
-            let div = document.createElement("div");
-            phoneNumber.placeholder = "9xxxxxx";
-            phoneNumber.id = "contactInfo";
-            phoneNumber.required = true;
-            phoneNumber.type = "number";
-            para.textContent = "You are not logged in, please enter your contact information instead:";
-            submitBtn.id = "secBtn";
-            submitBtn.classList.add("btn-gradient");
-            submitBtn.classList.add("mt-3");
-            submitBtn.textContent = "Purchase";
-            submitBtn.addEventListener('click', checkLogin);
-            document.getElementById("submitBtn").remove();
-            div.classList.add("center-text");
-            div.appendChild(para);
-            div.appendChild(phoneNumber);
-            div.appendChild(submitBtn);
-            document.getElementById("container").appendChild(div);
-        }
+    function askForContacts(event) {
+        let phoneNumber = document.createElement("input");
+        let para = document.createElement("p");
+        let submitBtn = document.createElement("button");
+        let div = document.createElement("div");
+        phoneNumber.placeholder = "9xxxxxx";
+        phoneNumber.id = "contactInfo";
+        phoneNumber.required = true;
+        phoneNumber.type = "number";
+        para.textContent = "You are not logged in, please enter your contact information instead:";
+        submitBtn.id = "secBtn";
+        submitBtn.classList.add("btn-gradient");
+        submitBtn.classList.add("mt-3");
+        submitBtn.textContent = "Purchase";
+        submitBtn.addEventListener('click', postRequest);
+        document.getElementById("submitBtn").remove();
+        div.classList.add("center-text");
+        div.appendChild(para);
+        div.appendChild(phoneNumber);
+        div.appendChild(submitBtn);
+        document.getElementById("container").appendChild(div);
     }
 </script>

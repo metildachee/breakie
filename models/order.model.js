@@ -10,6 +10,7 @@ const orderSchema = Schema({
         type: Boolean,
         default: false,
     },
+    price: Number,
     buyer: {type: Schema.Types.ObjectId, ref: "User"},
     buyerContact: String,
     seller: {type: Schema.Types.ObjectId, ref: "User"},
