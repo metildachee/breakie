@@ -43,24 +43,17 @@ router.get("/show/:id", (req, res) => {
     catch(err => console.log(err) )
 })
 
-router.post("/purchase/:id", (req, res) => {
-    // this button is pressed when the person wants to purchase
-    // an order should be made
-    // we will assume to be a cash purchase for now
-    // if the person is logged in, then this list will be added in their order
-    // otherwise, their email will be logged down
-    // order will also be added to the seller
-
-//     let breakie = Breakies.findById(req.params.id);
-//     Orders.create({ buyerEmail})
-    console.log(req.body);
-    if (req.body.buyerContact) {
-        console.log("this person did not login");
+router.post("/purchase/:id", async (req, res) => {
+    try {
+        let order = await Orders.create(req.body);
+        if (!req.body.buyerContact)
+            await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
+        let value = await Orders.findById(order._id).populate({
+            path: "items",
+            populate: { path: "breakie", model: "Breakie" }
+        });
+        order = await Orders.findByIdAndUpdate(order._id, { seller: value.items[0].breakie.creator });
     }
-    else {
-        console.log("this person logged in");
-    }
-    res.redirect("/");
-    console.log("I have redirected");
+    catch(err) { console.log(err); }
 })
 module.exports = router;

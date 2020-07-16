@@ -50,6 +50,7 @@
     }
 
     function postRequest() {
+        console.log("posting..");
         let breakieId = window.location.href.split("show/")[1];
         let obj = {
             price: document.getElementById("totalPrice").textContent,
