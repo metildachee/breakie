@@ -5,14 +5,16 @@ const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
 const Users = require('../models/user.model');
 const upload = require('../setup/upload');
+const mongoose = require('mongoose');
 
 // SHOW ALL BREAKIES --->
 
 router.get("/", (req, res) => {
     Breakies.find().
-    populate("creator").
+    populate("creator image").
     then( breakies => res.render("breakie/index", { breakies })).
     catch( err => console.log(err) );
+
 })
 
 // RENDERS FORM FOR NEW BREAKIE ---->
@@ -30,20 +32,20 @@ router.post("/new", async (req, res) => {
 
     try {
         await upload(req, res); // upload the photo
-        
+        // need to get the chunks by the file.id
         console.log(req.file.id);
-
-        let breakie = await Breakies.create(req.body);
-        if (req.file == undefined) {
-            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
-            console.log(`No file has been specified`);
-        } else {
-            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.id });
-            console.log(`File has been uploaded.`);    
-        }
-        console.log(breakie);
-        await Users.findByIdAndUpdate(req.user._id, { $push: { made: breakie._id }});
-        res.redirect("/");
+        console.log(req.file);
+        // let breakie = await Breakies.create(req.body);
+        // if (req.file == undefined) {
+        //     breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
+        //     console.log(`No file has been specified`);
+        // } else {
+        //     breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.id });
+        //     console.log(`File has been uploaded.`);    
+        // }
+        // console.log(breakie);
+        // await Users.findByIdAndUpdate(req.user._id, { $push: { made: breakie._id }});
+        // res.redirect("/");
     }
     catch(err) { console.log(err); }
 })

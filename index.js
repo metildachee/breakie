@@ -6,6 +6,7 @@ const session = require('express-session');
 const passport = require('./setup/ptconfig');
 const flash = require('connect-flash');
 const checkUser = require('./setup/checkUser');
+let database;
 
 require("dotenv").config();
 
@@ -14,7 +15,10 @@ mongoose.connect(process.env.DATABASE, {
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true,
-}, () => { console.log("Mongodb connected!"); });
+}, (err, db) => { 
+    database = db;
+    console.log("Mongodb connected!"); 
+});
 
 const app = express();
 app.set("view engine", "ejs");

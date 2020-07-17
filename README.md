@@ -1,11 +1,13 @@
 # Breakie
 
-Breakie is a web based application that allows interaction through breakfast.
+Breakie is a web based application that builds communities through sharing breakfasts.
 
-## Why Breakie? / Project Goal
-Ever had the moment where you wish you had a quick breakfast, but no one is cooking?
-Ever had the thought that you made wayyyy too much breakfast for yourself?
-Sharing is caring! Share your breakfast with your neighbours and interact with the community at the same time! The main purpose of this project is to increase community spirits and interaction.
+## Why Breakie?
+The new generation of Singaporeans nowadays rarely eat breakfast, especially during the rush hours. What if you could literally go next door and pick up a home made breakfast? Zero hassle, no time wasted.
+
+Ever had the thought that you made wayyyy too much breakfast for yourself just to end up throwing it away? Wouldn't it be great if you could share it and earn money at the same time instead?
+
+Sharing is caring! Exchange homemade breakfast with your neighbours and interact with the community at the same time! The main purpose of this project is to increase community spirits and interaction.
 
 ## Who should use Breakie? 
 Who is Breakie's target audience?
@@ -46,6 +48,6 @@ Core app features:
 
 ----
 1. Do everything in TypeScript
-2. Make an App for this 
+2. IonicJS
 3. Entice people to actually use the app
 4. Allow sharing on Instagram stories
