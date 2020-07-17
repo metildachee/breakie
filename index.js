@@ -55,6 +55,7 @@ app.use(function(req, res, next){
 
 app.use("/breakie", require("./routes/breakie.routes.js"));
 app.use("/", require("./routes/breakie.routes.js"));
+app.use("/order", require("./routes/order.routes.js"));
 app.use("/user", require("./routes/user.routes.js"));
 app.use("/auth", require("./routes/auth.routes.js"));
-app.listen(process.env.PORT, () => console.log(`Application listening on ${process.env.PORT}`));
+app.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));

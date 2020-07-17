@@ -35,7 +35,7 @@ router.post("/new", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
-
+// SHOWING BREAKIES  ----> 
 router.get("/show/:id", (req, res) => {
     Breakies.findById(req.params.id).
     populate("creator ingredients cuisine").
@@ -43,17 +43,21 @@ router.get("/show/:id", (req, res) => {
     catch(err => console.log(err) )
 })
 
+// PLACE ORDERS --->
 router.post("/purchase/:id", async (req, res) => {
+    console.log(req.body);
     try {
         let order = await Orders.create(req.body);
-        if (!req.body.buyerContact)
-            await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
         let value = await Orders.findById(order._id).populate({
             path: "items",
             populate: { path: "breakie", model: "Breakie" }
         });
+        console.log(value);
         order = await Orders.findByIdAndUpdate(order._id, { seller: value.items[0].breakie.creator });
+        if (!req.body.buyerContact) await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
+        res.redirect("/");
     }
     catch(err) { console.log(err); }
 })
+
 module.exports = router;

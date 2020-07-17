@@ -19,6 +19,7 @@ const breakieSchema = Schema({
         required: true, 
         type: Number
     },
+    timeout: Number,
     cuisine: {type: Schema.Types.ObjectId, ref: "Cuisine"},
     creator: {type: Schema.Types.ObjectId, ref: "User"}
 });
