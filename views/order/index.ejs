@@ -1,0 +1,102 @@
+<div class="mx-auto">
+    <div>
+        <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">To collect</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">To prepare</a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <% if (toCollect.length == 0) { %> 
+                <h5 class="orange-text center-text">You have no orders to collect. Start ordering!</h5>
+            <% } %> 
+            <div class="row mt-2 grey-border">
+                <div class="col-md-7 center-text">
+                    <% toCollect.forEach( collect => { %>
+                        <div class="row">
+                            <div class="col-6 justify-content-center">
+                                <div class="justify-center">
+                                    <h5 class="purple-text"><i class="fas fa-map-marker-alt"></i><%= collect.seller.address %></h5>
+                                    <p class="purple-text">@ <%= collect.seller.username %></p>
+            
+                                    <% collect.items.forEach( item => { %>
+                                        <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
+                                    <% }) %>
+                                    <p class="orange-text bold mb-0">Total: $<%= collect.price %></p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <% if (collect.paid) { %> 
+                                    <span class="badge badge-pill badge-secondary">Paid</span>
+                                <% } else { %>
+                                    <span class="badge badge-pill badge-danger">Not paid</span>
+                                <% } %>
+                                <% if (collect.completed) { %> 
+                                    <span class="badge badge-pill badge-secondary">Completed</span>
+                                <% } else { %>
+                                    <span class="badge badge-pill badge-success">Ready</span>
+                                <% } %>   
+                                <form action="/order/done/<%= collect._id %>" method="post">
+                                    <button type="submit" class="position-bottom btn-gradient">Collected</button>     
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <% if (toPrepare.length == 0) { %>
+                <h5 class="center-text orange-text" >You have no orders to prepare. Start cooking!</h5>
+            <% } %>  
+            <div class="row mt-2">
+                <div class="col-md-7 center-text">
+                    <% toPrepare.forEach( prepare => { %>
+                        <div class="row grey-border">
+                            <div class="col-6 justify-content-center ">
+                                <div class="justify-center">
+                                    <% if (prepare.buyerContact) { %>
+                                        <h5 class="purple-text"><i class="fas fa-phone"></i> <%= prepare.buyerContact %></h5>
+                                    <% } else { %>
+                                        <h5 class="purple-text"><i class="fas fa-map-marker-alt"></i> <%= prepare.buyer.address %></h5>
+                                        <p class="purple-text">@<%= prepare.buyer.username %></p>
+                                    <% } %>
+            
+                                    <% prepare.items.forEach( item => { %>
+                                        <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
+                                    <% }) %>
+                                    <p class="orange-text bold mb-0">Total: $<%= prepare.price %></p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <% if (prepare.paid) { %> 
+                                    <span class="badge badge-pill badge-secondary">Paid</span>
+                                <% } else { %>
+                                    <span class="badge badge-pill badge-danger">Not paid</span>
+                                <% } %>
+                                <% if (prepare.completed) { %> 
+                                    <span class="badge badge-pill badge-secondary">Completed</span>
+                                <% } else { %>
+                                    <span class="badge badge-pill badge-success">On the way</span>
+                                <% } %>   
+                                <form action="/order/done/<%= prepare._id %>" method="post">
+                                    <button type="submit" class="position-bottom btn-gradient">Collected</button>     
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                <div class="col">
+                    
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
