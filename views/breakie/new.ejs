@@ -1,20 +1,42 @@
-<form action="/breakie/new" method="post">
-    <label for="name"></label>
-    <input type="text" name="name" placeholder="Pork congee" required>
-    <label for="desc"></label>
-    <input type="text" name="desc" placeholder="A super delicious dish" required>
-    <label for="ingredients"></label>
-    <% ingredients.forEach( ingre => { %>
-        <input type="checkbox" name="ingredients" value="<%= ingre._id %>"><%= ingre.type %>
-    <% }) %>
-    <label for="qty">Quantity</label>
-    <input type="number" name="qty">
-    <label for="price">Price</label>
-    <input type="number" name="price">
-    <select name="cuisine" id="">
-        <% cuisines.forEach( cuisine => { %>
-            <option value="<%= cuisine._id %>"><%= cuisine.type %></option>
-        <% }) %>
-    </select>
-    <button type="submit">Publish</button>
-</form>
+<div class="mx-auto">
+    <form class="orange-text margin-top-10 width-50" enctype="multipart/form-data" action="/breakie/new" method="post">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" name="name" placeholder="Pork congee" required>
+        </div>
+        <div class="form-group">
+            <label for="desc">Description</label>
+            <input class="form-control" type="text" name="desc" placeholder="A super delicious dish" required>
+        </div>
+        <div class="form-group">
+            <label for="ingredients"></label>
+            <% ingredients.forEach( ingre => { %>
+                <div class="display-inline-block pr-2">
+                    <input type="checkbox" name="ingredients" value="<%= ingre._id %>"> <%= ingre.type %>
+                </div>
+            <% }) %>
+        </div>
+        <div class="form-group">
+            <label for="qty">Quantity</label>
+            <input class="form-control" type="number" name="qty" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input class="form-control" type="number" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Cuisine</label>
+            <select class="form-control" name="cuisine" id="">
+                <% cuisines.forEach( cuisine => { %>
+                    <option value="<%= cuisine._id %>"><%= cuisine.type %></option>
+                <% }) %>
+            </select>
+        </div>
+            <label class="form-control">
+                Add image
+                <input id="imageInput" class="form-control" type="file" name="file">
+            </label>
+
+        <button class="btn-gradient" type="submit">Publish</button>
+    </form>
+</div>

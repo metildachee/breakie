@@ -24,7 +24,7 @@ router.post("/login",
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/auth/login',
-        failureFlash: "Invalid email/password, please try again!"
+        failureFlash: "Invalid email/password, please try again!",
     })
 );
 

@@ -3,7 +3,8 @@ const Breakies = require('../models/breakie.model');
 const Cuisines = require('../models/cuisine.model');
 const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
-const Order = require('../models/order.model');
+const Users = require('../models/user.model');
+const upload = require('../setup/upload');
 
 // SHOW ALL BREAKIES --->
 
@@ -24,12 +25,24 @@ router.get("/new", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
-// STORING DATA FROM BREAKIE FORM ---->
+// CREATE NEW BREAKIE --->
 router.post("/new", async (req, res) => {
+
     try {
+        await upload(req, res); // upload the photo
+        
+        console.log(req.file.id);
+
         let breakie = await Breakies.create(req.body);
-        breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
-        await Users.findByIdAndUpdate(req.user._id, { $push: { made: breakie_id }});
+        if (req.file == undefined) {
+            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
+            console.log(`No file has been specified`);
+        } else {
+            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.id });
+            console.log(`File has been uploaded.`);    
+        }
+        console.log(breakie);
+        await Users.findByIdAndUpdate(req.user._id, { $push: { made: breakie._id }});
         res.redirect("/");
     }
     catch(err) { console.log(err); }
