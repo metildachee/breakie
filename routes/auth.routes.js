@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Users = require('../models/user.model');
 const passport = require('../setup/ptconfig');
+const bcrypt = require('bcrypt');
 
 // register
 router.get("/register", (req, res) => { res.render("user/register"); })

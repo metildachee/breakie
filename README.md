@@ -27,37 +27,25 @@ Sellers can visit the site to share what they're cooking for the day.
 
 ## MVP
 Core app features:
-1. Users should be able to view Breakies.
-2. Users should be able to register.
-3. Users should be able to make new Breakies.
-4. Authorised users should be able to delete Breakies.
-5. Authorised users should be able to edit Breakies.
+1. Registered users can CRUD breakies and orders
+2. Non-registered users can RD breakies
+3. Authorisation
+4. UI/UX
+5. Mobile responsive
 
 ---- 
-1. Users should be able to see by distance, where the nearest Breakie is.
-2. For Sellers, there should be a timeout where once the time is over, the sale no longer exists.
-3. There should be a history of Breakies for each Seller.
-4. Filtering by choice.
+1. Google Maps markers
+2. For sellers, auto removing of orders after timeframe.
+3. Stripe API
+4. Telegram bot API
+5. Rating system
+6. Google oAuth
+7. Chat
+8. Searching
+9. Filtering
 
----- 
-1. Integration of Stripe API/ adding of payment method.
-2. Addition of points system to entice buyers to buy.
-
----- 
-1. Inclusion of Google Maps API
-2. Inclusion of Google authentication
-
---- Insane furthers ---
+----
 1. Do everything in TypeScript
 2. Make an App for this 
 3. Entice people to actually use the app
 4. Allow sharing on Instagram stories
-
-### Design peeks
-Who are your end users?
-1. Non-techy people
-2. Common workers
-=> User interface should be simple and straight forward
-
-Color schemes
-1. Generic: orange... Community-ish
