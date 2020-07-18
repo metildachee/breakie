@@ -167,6 +167,13 @@ input {
 
 input[type="file"] { display: none; }
 
+/* maps */
+#map {
+    height: 100%;  /* The height is 400 pixels */
+    width: 100%;  /* The width is the width of the web page */
+    background-color: red;
+}
+
 @media screen and (max-width: 700px) {
     .width-50 {
         width: 80vw;

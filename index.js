@@ -88,7 +88,7 @@ app.get("/", (req, res) => {
     populate("creator").
     then( breakies =>  {
         console.log(breakies);
-        res.render("breakie/index", { breakies })
+        res.render("breakie/index", { breakies, key: process.env.GOOGLE_API_KEY })
     }).
     catch( err => console.log(err) );
 })
