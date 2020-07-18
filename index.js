@@ -96,7 +96,6 @@ app.get("/", (req, res) => {
 // @desc creates new breakies
 app.post("/breakie/new", upload.single('file'), async (req, res) => {
     try {
-        console.log(req.file.id);
         let breakie = await Breakies.create(req.body);
         
         if (req.file == undefined) {
@@ -108,7 +107,6 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
 
             console.log(`File has been uploaded.`);    
         }
-        console.log(breakie);
         await Users.findByIdAndUpdate(req.user._id, { $push: { publishes: breakie._id }});
         res.redirect("/");
     }
@@ -142,6 +140,17 @@ app.get('/image/:filename', (req, res) => {
         else res.status(404).json({ err: 'Not an image' });
     });
 });
+
+// @desc updates breakie file with form data
+app.post('/breakie/update/:id', upload.single('file'), async (req, res) => {
+    Breakies.findByIdAndUpdate(req.params.id, req.body).
+    then( async breakie => {
+        if (req.file == undefined) { await Breakies.findByIdAndUpdate(req.params.id, { image: undefined }); }
+        else { await Breakies.findByIdAndUpdate(req.params.id, { image: req.file.filename }); }
+        res.redirect(`/breakie/show/${breakie._id}`);
+    }).
+    catch( err => console.log(err) );
+})
 
 app.use("/auth", require("./routes/auth.routes.js"));
 app.use("/breakie", require("./routes/breakie.routes.js"));

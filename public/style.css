@@ -103,6 +103,7 @@ header a { color: white; }
 }
 
 .no-cursor:hover { cursor: pointer; }
+.disabled { cursor: no-drop; }
 
 /* buttons */
 .btn-border-gradient { border-color:#FF0000; }

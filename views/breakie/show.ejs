@@ -2,6 +2,9 @@
         <div id="breakieInfo">
             <h5 class="orange-text display-inline"><%= breakie.name %>  </h5>
             <span class="badge badge-pill badge-secondary"><%= breakie.cuisine.type %></span>
+            <% if (currentUser != null && currentUser._id.equals(breakie.creator._id) ) { %>
+                <a class="orange-text" href="/breakie/edit/<%= breakie._id %>"><i class="fas fa-edit"></i></a>
+            <% } %>    
             <img class="display-block" src="/image/<%= breakie.image %>" alt="Meow">
             <h5 class="purple-text" id="creator">@<%= breakie.creator.username %></h5>
             <p class="grey-text"><%= breakie.desc %></p>
@@ -22,17 +25,21 @@
             </div>
             <span>x</span>     
             <span>Quantity:</span> 
-            <span><input class="display-inline" type="number" value="1" min="1" name="qty" id="qty" max="<%= breakie.qty %>" required></span>
+            <% let buttonText = "Purchase" %>
+            <% let disabled = "" %>  
+            <% if (breakie.qty <= 0) { %>
+               <p>This dish is so populate it's sold out! Come back another time.</p>
+               <% buttonText = "Sold out" %>
+               <% disabled = "disabled" %>  
+            <% } else { %>
+                <span><input class="display-inline" type="number" value="1" min="1" name="qty" id="qty" max="<%= breakie.qty %>" required></span>
+            <% } %>
             <span><button class="display-inline btn-gradient">Total price: $<span id="totalPrice"><%= breakie.price %></span></button></span>
             <% if (currentUser != null) { %>
-                <button type="submit" class="btn-gradient mt-3" id="immediatePost" type="submit">Purchase</button>
+                <button type="submit" <%= disabled %> class="btn-gradient mt-3" id="immediatePost" type="submit"><%= buttonText %></button>
             <% } else { %>
-                <button type="submit" class="btn-gradient mt-3" id="submitBtn" type="submit">Purchase</button>
+                <button type="submit" <%= disabled %> class="btn-gradient mt-3" id="submitBtn" type="submit"><%= buttonText %></button>
             <% } %>
-            
-            <% if (currentUser != null && currentUser._id == breakie.creator._id ) { %>
-                <a href="edit/<%= breakie._id %>">Edit</a>
-            <% } %>    
         </div> 
     </div>
 

@@ -4,6 +4,7 @@ const Cuisines = require('../models/cuisine.model');
 const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
 const Users = require('../models/user.model');
+const Breakie = require('../models/breakie.model');
 
 // @desc displays forms
 router.get("/new", async (req, res) => {
@@ -15,18 +16,17 @@ router.get("/new", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
-// @desc updates order
+// @desc an order has been purchase
 router.post("/purchase/:id", async (req, res) => {
-    console.log(req.body);
     try {
         let order = await Orders.create(req.body);
         let value = await Orders.findById(order._id).populate({
             path: "items",
             populate: { path: "breakie", model: "Breakie" }
         });
-        console.log(value);
         order = await Orders.findByIdAndUpdate(order._id, { seller: value.items[0].breakie.creator });
         if (!req.body.buyerContact) await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
+        await Breakies.findByIdAndUpdate(req.params.id, { qty: req.body.qty });
         res.redirect("/");
     }
     catch(err) { console.log(err); }
@@ -35,11 +35,6 @@ router.post("/purchase/:id", async (req, res) => {
 router.delete("/delete/:id", (req, res) => {
     Breakies.findByIdAndDelete(req.params.id).
     then( breakie => {
-        // // remove it from the current owner 
-        // Users.findById(req.user._id).
-        // then( user => { $pull: { publishes: breakie._id }} ).
-        // catch( err => console.log(err) );
-        // // remove it from all orders
         Orders.aggregate([{ $match: { items: breakie._id}}]).
         then( order => { $pull: { items: breakie._id }}).
         catch( err => console.log(err) );
@@ -48,4 +43,16 @@ router.delete("/delete/:id", (req, res) => {
     }).
     catch(err => console.log(err) );
 })
+
+router.get("/edit/:id", async (req, res) => {
+    try {
+        let ingredients = await Ingredients.find();
+        let cuisines = await Cuisines.find();
+        Breakies.findById(req.params.id).
+        then( breakie => res.render("breakie/edit", { breakie, ingredients, cuisines })).
+        catch(err => console.log(err) );    
+    }
+    catch(err) { console.log(err); }
+})
+
 module.exports = router;
