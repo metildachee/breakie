@@ -1,11 +1,9 @@
-# Breakie
+# breakie - made with love, from next door
 
-Breakie is a web based application that builds communities through sharing breakfasts.
+breakie is a web based application that builds communities through sharing breakfasts.
 
-## Why Breakie?
-The new generation of Singaporeans nowadays rarely eat breakfast, especially during the rush hours. What if you could literally go next door and pick up a home made breakfast? Zero hassle, no time wasted.
-
-Ever had the thought that you made wayyyy too much breakfast for yourself just to end up throwing it away? Wouldn't it be great if you could share it and earn money at the same time instead?
+## Why breakie?
+The new generation of Singaporeans nowadays rarely eat breakfast, especially during the rush hours. On the other hand, many cooking enthusiasts often make piping hot breakfast, but can't finish it alone; and all the effort goes to waste. What if there was a way to close the gap? What if, the busy bee could literally, go next door to collect freshly made breakfast, with a minimal fee.
 
 Sharing is caring! Exchange homemade breakfast with your neighbours and interact with the community at the same time! The main purpose of this project is to increase community spirits and interaction.
 
@@ -18,7 +16,7 @@ Who is Breakie's target audience?
 + Know your neighbours better
 
 ### People who make breakfast
-+ Sharing is caring
++ Making something that people enjoy
 + Nothing goes to waste
 + Earn some $$
 + Know your neighbours better
