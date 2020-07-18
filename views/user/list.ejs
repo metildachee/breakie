@@ -1,0 +1,23 @@
+<% if (breakies.length == 0) { %>
+    <p class="orange-text">You have no listed breakies. Start adding now!</p>
+<% } else { %>
+    <table class="table table-striped center-text">
+        <tbody>
+            <% breakies.forEach( breakie => { %>
+                <tr>
+                    <td>
+                        <span class="orange-text"><span class="bold"><%= breakie.name %></span> @ $<%= breakie.price %></span>
+                        <span class="orange-text">Quantity: <%= breakie.qty %></span>
+                        <div class="float-right">
+                            <a class="orange-text" href="/breakie/show/<%= breakie._id %>"><i class="far fa-eye"></i></a>
+                            <a class="orange-text" href="/breakie/edit/<%= breakie._id %>"><i class="fas fa-edit"></i></a>
+                            <form action="/breakie/delete/<%= breakie._id %>?_method=DELETE" method="post">
+                                <button class="orange-text" type="submit"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>

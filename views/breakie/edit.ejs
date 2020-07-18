@@ -1,0 +1,42 @@
+<div class="mx-auto">
+    <form class="orange-text margin-top-10 width-50" enctype="multipart/form-data" action="/breakie/update/<%= breakie._id %>" method="post">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" name="name" value="<%= breakie.name %>" required>
+        </div>
+        <div class="form-group">
+            <label for="desc">Description</label>
+            <input class="form-control" type="text" name="desc" value="<%= breakie.desc %>>" required>
+        </div>
+        <div class="form-group">
+            <label for="ingredients"></label>
+            <% ingredients.forEach( ingre => { %>
+                <div class="display-inline-block pr-2">
+                    <input type="checkbox" name="ingredients" value="<%= ingre._id %>"> <%= ingre.type %>
+                </div>
+            <% }) %>
+        </div>
+        <div class="form-group">
+            <label for="qty">Quantity</label>
+            <input class="form-control" type="number" value="<%= breakie.qty %>" name="qty" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input class="form-control" type="number" name="price" value ="<%= breakie.price %>" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Cuisine</label>
+            <select class="form-control" name="cuisine" id="">
+                <% cuisines.forEach( cuisine => { %>
+                    <option value="<%= cuisine._id %>"><%= cuisine.type %></option>
+                <% }) %>
+            </select>
+        </div>
+            <label class="form-control">
+                Add image
+                <input id="imageInput" class="form-control" type="file" name="file" required>
+            </label>
+
+        <button class="btn-gradient" type="submit">Publish</button>
+    </form>
+</div>
