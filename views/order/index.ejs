@@ -46,16 +46,21 @@
                                     <span class="badge badge-pill badge-danger">Removed</span>
                                 <% } else if (collect.completed) { %> 
                                     <span class="badge badge-pill badge-secondary">Completed</span>
+                                <% } else if (collect.cancelled) { %> 
+                                    <span class="badge badge-pill badge-danger">Cancelled</span>
                                 <% } else { %>
                                     <span class="badge badge-pill badge-success">Ready</span>
                                 <% } %>   
 
                                 <% if (!itemsComplete) { %>
                                     <button class="position-bottom btn-gradient">Chat</button>
-                                <% } else { %>
+                                <% } else if (!collect.completed && !collect.cancelled){ %>
                                     <form action="/order/done/<%= collect._id %>" method="post">
                                         <button type="submit" class="position-bottom btn-gradient">Collected</button>     
                                     </form>
+                                <% } %>
+                                <% if (!collect.completed && itemsComplete && !collect.cancelled) { %>
+                                    <a class="btn btn-danger mt-4" href="/order/cancel/<%= collect._id %>">Cancel</a>
                                 <% } %>
                             </div>
                         </div>
@@ -82,9 +87,14 @@
                                         <h5 class="purple-text"><i class="fas fa-map-marker-alt"></i> <%= prepare.buyer.address %></h5>
                                         <p class="purple-text">@<%= prepare.buyer.username %></p>
                                     <% } %>
-            
+                                    <% let preparedItemsCollected = true %> 
                                     <% prepare.items.forEach( item => { %>
-                                        <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
+                                        <% if (item.breakie == null) { %>
+                                            <p class="orange-text">This order has been removed by you.</p>
+                                            <% preparedItemsCollected = false; %> 
+                                        <% } else { %>
+                                            <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
+                                        <% } %>
                                     <% }) %>
                                     <p class="orange-text bold mb-0">Total: $<%= prepare.price %></p>
                                 </div>
@@ -95,14 +105,24 @@
                                 <% } else { %>
                                     <span class="badge badge-pill badge-danger">Not paid</span>
                                 <% } %>
-                                <% if (prepare.completed) { %> 
+
+                                <% if (!preparedItemsCollected) { %>
+                                    <span class="badge badge-pill badge-danger">Item removed</span>
+                                <% } else if (prepare.completed) { %> 
                                     <span class="badge badge-pill badge-secondary">Completed</span>
+                                <% } else if (prepare.cancelled) { %>
+                                    <span class="badge badge-pill badge-danger">Cancelled</span>
                                 <% } else { %>
                                     <span class="badge badge-pill badge-success">On the way</span>
                                 <% } %>   
-                                <form action="/order/done/<%= prepare._id %>" method="post">
-                                    <button type="submit" class="position-bottom btn-gradient">Collected</button>     
-                                </form>
+
+                                <% if (!preparedItemsCollected) { %>
+                                    <button class="position-bottom btn-gradient">Chat</button>
+                                <% } else if (!prepare.completed && !prepare.cancelled){ %>
+                                    <form action="/order/done/<%= prepare._id %>" method="post">
+                                        <button type="submit" class="position-bottom btn-gradient">Picked up</button>     
+                                    </form>
+                                <% } %>
                             </div>
                         </div>
                     <% }) %>

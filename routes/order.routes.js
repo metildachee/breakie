@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Orders = require('../models/order.model');
+const Breakies = require('../models/breakie.model');
 
 // SHOW ORDERS -->
 // only for logged in users
@@ -26,6 +27,23 @@ router.post("/done/:id", async (req, res) => {
     try {
         await Orders.findByIdAndUpdate(req.params.id, { completed: true, paid: true });
         res.redirect("/order/");
+    }
+    catch(err) { console.log(err); }
+})
+
+// @desc buyer wants to cancel the order
+router.get("/cancel/:id", async (req, res) => {
+    try {
+        // and we will set cancelled variable to true 
+        let order = await Orders.findByIdAndUpdate(req.params.id, { cancelled: true });
+
+        // we will resume the quantities
+        for (let i = 0; i < order.items.length; i++) {
+            let item = order.items[i];
+            console.log(item);
+            await Breakies.findByIdAndUpdate(item.breakie, { $inc: { qty: item.qty }} );
+        }
+        res.redirect("/order");
     }
     catch(err) { console.log(err); }
 })
