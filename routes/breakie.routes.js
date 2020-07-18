@@ -32,4 +32,20 @@ router.post("/purchase/:id", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
+router.delete("/delete/:id", (req, res) => {
+    Breakies.findByIdAndDelete(req.params.id).
+    then( breakie => {
+        // // remove it from the current owner 
+        // Users.findById(req.user._id).
+        // then( user => { $pull: { publishes: breakie._id }} ).
+        // catch( err => console.log(err) );
+        // // remove it from all orders
+        Orders.aggregate([{ $match: { items: breakie._id}}]).
+        then( order => { $pull: { items: breakie._id }}).
+        catch( err => console.log(err) );
+
+        res.redirect("/user/list");
+    }).
+    catch(err => console.log(err) );
+})
 module.exports = router;

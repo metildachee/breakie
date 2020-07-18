@@ -22,7 +22,7 @@ const breakieSchema = Schema({
     timeout: Number,
     cuisine: {type: Schema.Types.ObjectId, ref: "Cuisine"},
     creator: {type: Schema.Types.ObjectId, ref: "User"}
-});
+}, { timestamps: true });
 
 const Breakie = mongoose.model("Breakie", breakieSchema);
 

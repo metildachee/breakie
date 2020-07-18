@@ -22,11 +22,17 @@
                                 <div class="justify-center">
                                     <h5 class="purple-text"><i class="fas fa-map-marker-alt"></i><%= collect.seller.address %></h5>
                                     <p class="purple-text">@ <%= collect.seller.username %></p>
-            
+                                    <% let itemsComplete = true %>
                                     <% collect.items.forEach( item => { %>
-                                        <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
+                                        <% if (item.breakie == null) { %>
+                                            <% itemsComplete = false %>
+                                            <p class="orange-text">This item has been removed by the seller. Please <a href="#">chat</a> to find out more.</p>
+                                        <% } else { %>
+                                            <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
+                                        <% } %>
                                     <% }) %>
                                     <p class="orange-text bold mb-0">Total: $<%= collect.price %></p>
+
                                 </div>
                             </div>
                             <div class="col">
@@ -35,14 +41,22 @@
                                 <% } else { %>
                                     <span class="badge badge-pill badge-danger">Not paid</span>
                                 <% } %>
-                                <% if (collect.completed) { %> 
+
+                                <% if (!itemsComplete) { %>
+                                    <span class="badge badge-pill badge-danger">Removed</span>
+                                <% } else if (collect.completed) { %> 
                                     <span class="badge badge-pill badge-secondary">Completed</span>
                                 <% } else { %>
                                     <span class="badge badge-pill badge-success">Ready</span>
                                 <% } %>   
-                                <form action="/order/done/<%= collect._id %>" method="post">
-                                    <button type="submit" class="position-bottom btn-gradient">Collected</button>     
-                                </form>
+
+                                <% if (!itemsComplete) { %>
+                                    <button class="position-bottom btn-gradient">Chat</button>
+                                <% } else { %>
+                                    <form action="/order/done/<%= collect._id %>" method="post">
+                                        <button type="submit" class="position-bottom btn-gradient">Collected</button>     
+                                    </form>
+                                <% } %>
                             </div>
                         </div>
                     <% }) %>
