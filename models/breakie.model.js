@@ -8,12 +8,7 @@ const breakieSchema = Schema({
         type: String
     },
     rating: Number,
-    // image: { type: Schema.Types.ObjectId },
     image: String,
-    // image: { 
-    //     file: { type: Schema.Types.ObjectId, ref: "photos.files" },
-    //     data: [ {type: Schema.Types.ObjectId, ref: "photos.files"}]
-    // },
     desc: String,
     ingredients: [{type: Schema.Types.ObjectId, ref: "Ingredient"}],
     qty: {

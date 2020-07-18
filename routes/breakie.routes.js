@@ -4,10 +4,8 @@ const Cuisines = require('../models/cuisine.model');
 const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
 const Users = require('../models/user.model');
-// const upload = require('../setup/upload');
-// const mongoose = require('mongoose');
 
-// RENDERS FORM FOR NEW BREAKIE ---->
+// @desc displays forms
 router.get("/new", async (req, res) => {
     try {
         let ingredients = await Ingredients.find();
@@ -17,7 +15,7 @@ router.get("/new", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
-// PLACE ORDERS --->
+// @desc updates order
 router.post("/purchase/:id", async (req, res) => {
     console.log(req.body);
     try {

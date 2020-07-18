@@ -24,20 +24,29 @@
         <% }) %>
     <% } %>
     <nav class="navbar">
-        <a id="header-breakie" href="/">breakie
-            <% if (currentUser != null) { %> 
-                <span>@<%= currentUser.username %></span>
-            <% } %> 
-        </a>
+        <a id="header-breakie" href="/">breakie</a>
         
         <% if (currentUser == null) { %>
             <a href="/auth/login">login</a>
         <% } else { %>
             <ul class="navbar-right">
                 <!-- <p>Welcome back!  </p> -->
-                <a href="/breakie/new"><i class="fas fa-plus"></i></a>
-                <a href="/order/"><i class="fas fa-clipboard-list"></i></a>
-                <a href="/auth/logout">logout</a>
+                <% if (currentUser != null) { %> 
+                    <div class="btn-group">
+                        <button type="button" class="btn-original btn-border-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @<%= currentUser.username %>
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="/order/">Orders</a>
+                          <a class="dropdown-item" href="/user/list/">My listings</a>
+                          <a class="dropdown-item" href="/breakie/new/">New breakie</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="#">Settings</a>
+                          <a class="dropdown-item" href="/auth/logout">Logout</a>
+                        </div>
+                    </div>
+                    <span></span>
+                <% } %>     
             </ul>
         <% } %>
     </nav>

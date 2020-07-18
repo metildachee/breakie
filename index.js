@@ -13,10 +13,8 @@ const Grid = require('gridfs-stream');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
-
 require("dotenv").config();
 let gfs;
-
 
 mongoose.connect(process.env.DATABASE, {
     useNewUrlParser : true,
@@ -28,21 +26,6 @@ mongoose.connect(process.env.DATABASE, {
     gfs.collection('uploads');
     console.log("Mongodb connected!"); 
 });
-
-// const conn = mongoose.createConnection(process.env.DATABASE, {
-//     useNewUrlParser : true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//     useCreateIndex: true,
-// });
-
-
-// conn.once('open',() => {
-//   // Init stream
-//   gfs = Grid(conn.db, mongoose.mongo);
-//   gfs.collection('uploads');
-// });
-
 
 const storage = new MulterGridfsStorage({
     url: process.env.DATABASE,
@@ -56,9 +39,9 @@ const storage = new MulterGridfsStorage({
           resolve(fileInfo);
       });
     }
-  });
+});
 
-  const upload = multer({ storage });
+const upload = multer({ storage });
 
 const app = express();
 app.set("view engine", "ejs");
@@ -87,26 +70,6 @@ app.use(function(req, res, next){
     next();
 })
 
-app.get("/", (req, res) => {
-    Breakies.find().
-    populate("creator").
-    then( breakies =>  {
-        // gfs.files.findOne({ _id: breakies.image }, (err, file) => {
-        //     res.render("breakie/index", { breakie, file });
-        // })
-        console.log(breakies);
-        res.render("breakie/index", { breakies })
-    }).
-    catch( err => console.log(err) );
-    // console.log("i am here");
-    // Breakies.find().
-    // then( breakies => {
-    //     console.log(breakies);
-    //     res.send(breakies)
-    // }).
-    // catch( err => console.log(err) );
-})
-
 // // app.get("/ingredients/add", (req, res) => {
 // //     res.render("ingredient/index");
 // // })
@@ -117,9 +80,21 @@ app.get("/", (req, res) => {
 //     console.log(ingredient);
 //     res.redirect("/ingredients/add");
 // })
-// CREATE NEW BREAKIE ---> 
+
+//// ----------- ALL ROUTES THAT REQUIRE GFS ---------
+// @desc displays homepage
+app.get("/", (req, res) => {
+    Breakies.find().
+    populate("creator").
+    then( breakies =>  {
+        console.log(breakies);
+        res.render("breakie/index", { breakies })
+    }).
+    catch( err => console.log(err) );
+})
+
+// @desc creates new breakies
 app.post("/breakie/new", upload.single('file'), async (req, res) => {
-    console.log(req.file);
     try {
         console.log(req.file.id);
         let breakie = await Breakies.create(req.body);
@@ -128,19 +103,19 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
             breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
             console.log(`No file has been specified`);
         } else {
-            // breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.id });
             console.log(breakie); 
             breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
+
             console.log(`File has been uploaded.`);    
         }
         console.log(breakie);
-        await Users.findByIdAndUpdate(req.user._id, { $push: { made: breakie._id }});
+        await Users.findByIdAndUpdate(req.user._id, { $push: { publishes: breakie._id }});
         res.redirect("/");
     }
     catch(err) { console.log(err); }
 })
 
-// SHOWING BREAKIES  ----> 
+// @desc shows individual breakies
 app.get("/breakie/show/:id", (req, res) => {
     Breakies.findById(req.params.id).
     populate("creator ingredients cuisine").
@@ -152,9 +127,9 @@ app.get("/breakie/show/:id", (req, res) => {
     catch(err => console.log(err) )
 })
 
+// @desc shows imagefiles
 app.get('/image/:filename', (req, res) => {
     gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-        console.log(file);
       if (!file || file.length === 0) {
         return res.status(404).json({
           err: 'No file exists'

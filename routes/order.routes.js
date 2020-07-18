@@ -17,7 +17,6 @@ router.get("/", async (req, res) => {
                 path: "items",
                 populate: { path: "breakie", model: "Breakie" }
             });
-        console.log(toCollect);
         res.render("order/index", { toCollect, toPrepare });
     }
     catch(err) { console.log(err); }

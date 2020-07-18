@@ -1,18 +1,20 @@
 <div class="row">
     <div class="col-md-8 grid">
         <% breakies.forEach( breakie => { %>
-            <div class="cell">
-                <img src="/image/<%= breakie.image %>" alt="">
-                <h5 class="cell-title"><%= breakie.name %></h5>
-                  <p class="purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
-                   
-                  <p class="purple-text ">Breakie distance</p>
-                  <p class="cell-price">$<%= breakie.price %>.00</p>
-                  <a class="btn-original" href="/breakie/show/<%= breakie._id %>">Makan!</a>
+            <div class="cell m-1 line-height-60">
+                <div class="mx-auto">
+                    <img class="square-img" src="/image/<%= breakie.image %>" alt="">
+                </div>
+                <h6 class="cell-title"><%= breakie.name %></h6>
+                <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
+                <p class="m-0 purple-text ">@<%= breakie.creator.username %></p>
+                <p class="m-0 purple-text ">Breakie distance</p>
+                <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
+                <a class="btn-original" href="/breakie/show/<%= breakie._id %>">Makan!</a>
             </div>
         <% }) %>
     </div>
-    <div>
+    <div class="col">
         map
     </div>
 </div>
