@@ -2,7 +2,7 @@
     <div class="col-md-8 grid">
         <% breakies.forEach( breakie => { %>
             <div class="cell">
-                <img src="/image/<%= file.filename %>" alt="">
+                <img src="/image/<%= breakie.image %>" alt="">
                 <h5 class="cell-title"><%= breakie.name %></h5>
                   <p class="purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
                    
@@ -15,8 +15,4 @@
     <div>
         map
     </div>
-
 </div>
-
-
-

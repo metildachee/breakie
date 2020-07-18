@@ -91,10 +91,11 @@ app.get("/", (req, res) => {
     Breakies.find().
     populate("creator").
     then( breakies =>  {
-        gfs.files.findOne({ _id: breakie.image }, (err, file) => {
-            res.render("breakie/index", { breakie, file });
-        })
-        // res.render("breakie/index", { breakies })
+        // gfs.files.findOne({ _id: breakies.image }, (err, file) => {
+        //     res.render("breakie/index", { breakie, file });
+        // })
+        console.log(breakies);
+        res.render("breakie/index", { breakies })
     }).
     catch( err => console.log(err) );
     // console.log("i am here");
@@ -122,11 +123,14 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
     try {
         console.log(req.file.id);
         let breakie = await Breakies.create(req.body);
+        
         if (req.file == undefined) {
             breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
             console.log(`No file has been specified`);
         } else {
-            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.id });
+            // breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.id });
+            console.log(breakie); 
+            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
             console.log(`File has been uploaded.`);    
         }
         console.log(breakie);
@@ -150,27 +154,12 @@ app.get("/breakie/show/:id", (req, res) => {
 
 app.get('/image/:filename', (req, res) => {
     gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+        console.log(file);
       if (!file || file.length === 0) {
         return res.status(404).json({
           err: 'No file exists'
         });
       }
-        if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-            const readstream = gfs.createReadStream(file.filename);
-            readstream.pipe(res);
-        } 
-        else res.status(404).json({ err: 'Not an image' });
-    });
-});
-
-app.get('/image/:id', (req, res) => {
-    gfs.files.findOne({ _id: req.params.id }, (err, file) => {
-        console.log(file);
-        if (!file || file.length === 0) {
-            return res.status(404).json({
-            err: 'No file exists'
-            });
-        }
         if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
             const readstream = gfs.createReadStream(file.filename);
             readstream.pipe(res);
