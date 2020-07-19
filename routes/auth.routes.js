@@ -4,7 +4,6 @@ const passport = require('../setup/ptconfig');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 
-// register
 router.get("/register", (req, res) => { res.render("user/register"); })
 
 router.post("/register", async (req, res) => {
@@ -13,7 +12,6 @@ router.post("/register", async (req, res) => {
         let user = await Users.create(req.body);
         await Users.findByIdAndUpdate(user._id, { password: hash });
 
-        /// Geocoding from Google API --->
         axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
             params: {
                 address: req.body.address,
@@ -21,9 +19,7 @@ router.post("/register", async (req, res) => {
             }
         }).
         then( value => {
-            // this will give me the lat and long coordinates
             let location = value.data.results[0].geometry.location;
-            console.log(location);
             const coordinates = { type: "Point", coordinates: [location.lng, location.lat] };
             Users.findByIdAndUpdate(user._id, { location: coordinates }).
             then( user => { 
@@ -35,8 +31,6 @@ router.post("/register", async (req, res) => {
             res.redirect("/auth/login");
         }).
         catch(err => console.log(err));
-        // Google API --->
-        // let location = { lat: 1.3570639, lng: 103.7673642 };
     }
     catch(err) { console.log(err); }
 })

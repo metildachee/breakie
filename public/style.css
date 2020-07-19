@@ -34,6 +34,12 @@ header a { color: white; }
     align-items: center;
     background-color: #FF8E3C; 
 }
+header {
+    position: fixed;
+    width: 100vw;
+    height: 20vh;
+    z-index: 1;
+}
 .navbar-right { float: right; }
 .navbar-right > a { padding: 5px; }
 /* overwrite bootstrap tabs */
@@ -44,6 +50,13 @@ header a { color: white; }
 }
 .nav-link.active { color: #FF8E3C !important; }
 .tab-content { width: 80vw !important; }
+
+.navbar-right > ul, ol, ul {
+    margin-bottom: 0rem !important;
+}
+.navbar-right > .btn-group > p{
+    margin-bottom: 0rem !important;
+}
 
 /* testing */
 .red { background-color: red; }
@@ -71,6 +84,7 @@ header a { color: white; }
     font-size: 1.25rem; 
     font-weight: bold;
 }
+.white-text { color: white; }
 .orange-text { color: #FF8E3C; }
 .purple-text { color: #D9376E; }
 .grey-text { color: #948484; }
@@ -83,7 +97,8 @@ header a { color: white; }
 .margin-top-neg { margin-top: -10px; }
 .margin-top-10 { margin-top: 10px; }
 .width-50 { width: 50vw; }
-
+.height-80 { height: 260px; }
+.width-80 { width: 60vw; }
 /* display styles */
 .rtl { direction: rtl; }
 .display-inline { display: inline !important; }
@@ -102,6 +117,16 @@ header a { color: white; }
     justify-content: center;
 }
 
+.absolute-right {
+    overflow: hidden;
+    height: 100vh;
+    right: 0px;
+}
+.mapContainer { 
+    position: fixed;
+    right: 0px;
+    top: 30px;
+}
 .no-cursor:hover { cursor: pointer; }
 .disabled { cursor: no-drop; }
 
@@ -169,14 +194,17 @@ input[type="file"] { display: none; }
 
 /* maps */
 #map {
-    height: 100%;  /* The height is 400 pixels */
-    width: 100%;  /* The width is the width of the web page */
+    height: 100vh;  /* The height is 400 pixels */
+    width: 33vw;
     background-color: red;
 }
 
 @media screen and (max-width: 700px) {
     .width-50 {
         width: 80vw;
+    }
+    #map {
+        display: none;
     }
     .grid {
         grid-template-columns: repeat(2, 1fr);

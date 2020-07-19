@@ -97,9 +97,8 @@ app.get("/", async (req, res) => {
         console.log("current pos is undefined");
         currentPos = { lat: 1.3525, lng: 103.9447 };
     } else {
-        console.log(currentPos + " is udpated");
+        console.log(currentPos + " is updated");
     }
-    console.log("meow", currentPos);
     try {
         let sortedUsers = await Users.
         aggregate([ { 
@@ -128,21 +127,21 @@ app.get("/", async (req, res) => {
         
         // @ find distance
         let distanceArray = [];
-        axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
-            params: {
-                origins:currentPos.lat+","+currentPos.lng,
-                destinations:addrBreakies, 
-                mode: "walking|bicyling|bus",
-                key: process.env.GOOGLE_API_KEY
-            }
-        }).
-        then( data => {
-            data.data.rows.forEach( row => {
-                row.elements.forEach( value => { distanceArray.push(value.duration.text); })
-            })
+        // axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+        //     params: {
+        //         origins:currentPos.lat+","+currentPos.lng,
+        //         destinations:addrBreakies, 
+        //         mode: "walking|bicyling|bus",
+        //         key: process.env.GOOGLE_API_KEY
+        //     }
+        // }).
+        // then( data => {
+        //     data.data.rows.forEach( row => {
+        //         row.elements.forEach( value => { distanceArray.push(value.duration.text); })
+        //     })
             res.render("breakie/index", { distance: distanceArray, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
-        } ).
-        catch(err => console.log(err) );
+        // } ).
+        // catch(err => console.log(err) );
     }
     catch(err) { console.log(err); }
 })
