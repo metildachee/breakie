@@ -1,4 +1,5 @@
     <div class="col-md-8 grid">
+        <p id="breakies" style="display: none"><%= JSON.stringify(breakies) %></p>
         <% breakies.forEach( breakie => { %>
             <div class="cell m-1 line-height-60">
                 <div class="mx-auto">
@@ -8,26 +9,39 @@
                 <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
                 <p class="m-0 purple-text ">@<%= breakie.creator.username %></p>
                 <p class="m-0 purple-text ">Breakie distance</p>
+                Long: <%= breakie.creator.coordinates.coordinates[0] %>
+                Lat: <%= breakie.creator.coordinates.coordinates[1] %>
+
                 <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
                 <a class="btn-original" href="/breakie/show/<%= breakie._id %>">Makan!</a>
             </div>
         <% }) %>
     </div>
-    <div class="float-right col-md-4">
-        <div id="map"></div>
+    <div class="col-md-4">
+        <div id="map"><%= key %></div>
     </div>
-<!-- <script>
-    // Initialize and add the map
+<script>
+    let breakies = JSON.parse(document.getElementById("breakies").innerText);
+    console.log(breakies[0]);
     function initMap() {
-      // The location of Uluru
-      var uluru = {lat: 1.290270, lng: 103.851959};
-      // The map, centered at Uluru
+      var singapore = {lat: 1.290270, lng: 103.851959};
       var map = new google.maps.Map(
-          document.getElementById('map'), {zoom: 4, center: uluru});
-      // The marker, positioned at Uluru
-      var marker = new google.maps.Marker({position: uluru, map: map});
+        document.getElementById('map'), {zoom: 12, center: singapore});
+        breakies.forEach( breakie => {
+            let sellerCoords = {lat: parseFloat(breakie.creator.coordinates.coordinates[1]), lng: parseFloat(breakie.creator.coordinates.coordinates[0])};
+            let icon = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+            setMarker(sellerCoords, icon, map);
+        })
     }
-</script> -->
+
+    function setMarker(coordinates, iconType, currentMap) {
+        let market = new google.maps.Marker({position: coordinates, 
+            map: currentMap,
+            icon: iconType
+        });
+    }
+
+</script>
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
 </script>
