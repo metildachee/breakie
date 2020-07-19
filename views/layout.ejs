@@ -33,9 +33,9 @@
                 <!-- <p>Welcome back!  </p> -->
                 <% if (currentUser != null) { %> 
                     <div class="btn-group">
-                        <button type="button" class="btn-original btn-border-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @<%= currentUser.username %>
-                        </button>
+                        <!-- <button type="button" class="btn-original btn-border-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
+                        <p class="white-text dropdown-toggle pr-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@<%= currentUser.username %></p>
+                        <!-- </button> -->
                         <div class="dropdown-menu">
                           <a class="dropdown-item" href="/order/">Orders</a>
                           <a class="dropdown-item" href="/user/list/">My listings</a>
@@ -53,7 +53,7 @@
 
 </header>
 <body>
-    <div id="container" class="container">
+    <div id="container" class="container pt-5">
         <div class="row">
             <%- body %>
         </div> 
