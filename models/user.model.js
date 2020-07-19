@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
+const pointSchema = new mongoose.Schema({
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
+});  
+
 const userSchema = Schema({
     username: {
         required: true,
@@ -18,6 +30,10 @@ const userSchema = Schema({
     address: {
         required: true,
         type: String
+    },
+    coordinates: {
+       type: pointSchema,
+       index: "2dsphere"
     },
     orders: [{type: Schema.Types.ObjectId, ref: "Order"}],
     publishes: [{type: Schema.Types.ObjectId, ref: "Breakie"}],

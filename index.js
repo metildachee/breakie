@@ -8,7 +8,6 @@ const flash = require('connect-flash');
 const checkUser = require('./setup/checkUser');
 const Breakies = require('./models/breakie.model');
 const Users = require('./models/user.model');
-
 const Grid = require('gridfs-stream');
 const multer = require('multer');
 const bodyParser = require('body-parser');
@@ -87,7 +86,6 @@ app.get("/", (req, res) => {
     Breakies.find().
     populate("creator").
     then( breakies =>  {
-        console.log(breakies);
         res.render("breakie/index", { breakies, key: process.env.GOOGLE_API_KEY })
     }).
     catch( err => console.log(err) );
