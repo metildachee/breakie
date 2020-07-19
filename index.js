@@ -81,14 +81,58 @@ app.use(function(req, res, next){
 // })
 
 //// ----------- ALL ROUTES THAT REQUIRE GFS ---------
+var currentPos;
+//@desc gets current position of user
+app.post("/", (req, res) => {
+    console.log("here", req.body);
+    currentPos = { lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng) };
+    console.log("thats all for now");
+    res.redirect("/");
+})
+
 // @desc displays homepage
-app.get("/", (req, res) => {
-    Breakies.find().
-    populate("creator").
-    then( breakies =>  {
-        res.render("breakie/index", { breakies, key: process.env.GOOGLE_API_KEY })
-    }).
-    catch( err => console.log(err) );
+app.get("/", async (req, res) => {
+    // Breakies.find().
+    // populate("creator").
+    // then( breakies =>  {
+    //     res.render("breakie/index", { breakies, key: process.env.GOOGLE_API_KEY })
+    // }).
+    // catch( err => console.log(err) )
+    // console.log(currentPos);
+    if (currentPos == undefined) {
+        console.log("current pos is undefined");
+        currentPos = { lat: 1.3525, lng: 103.9447 };
+    } else {
+        console.log(currentPos + " is udpated");
+    }
+
+    // setTimeout(main, 3000);
+    console.log("meow", currentPos);
+    try {
+        let sortedUsers = await Users.
+        aggregate([ { 
+            $geoNear: { 
+                near: 
+                { type: "Point", coordinates: [currentPos.lng, currentPos.lat] },
+                key: "location",
+                distanceField: "distanceField"
+            }
+        }]);
+        let creators = sortedUsers.filter( user => user.publishes.length > 0 );
+        let breakies = creators.map( creator => { return creator.publishes; });
+        breakies = breakies.flat();
+        let order = breakies;
+        breakies = await Breakies.find({ _id: { $in: breakies }}).populate("creator");
+        let sortedBreakies = [];
+        order.forEach( no => {
+            breakies.forEach( breakie => {
+                if (breakie._id.equals(no)) sortedBreakies.push(breakie);
+            })
+        })
+        
+        res.render("breakie/index", { breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+    }
+    catch(err) { console.log(err); }
 })
 
 // @desc creates new breakies

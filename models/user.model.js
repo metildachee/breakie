@@ -31,7 +31,7 @@ const userSchema = Schema({
         required: true,
         type: String
     },
-    coordinates: {
+    location: {
        type: pointSchema,
        index: "2dsphere"
     },

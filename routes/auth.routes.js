@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
             let location = value.data.results[0].geometry.location;
             console.log(location);
             const coordinates = { type: "Point", coordinates: [location.lng, location.lat] };
-            Users.findByIdAndUpdate(user._id, { coordinates: coordinates }).
+            Users.findByIdAndUpdate(user._id, { location: coordinates }).
             then( user => { 
                 console.log(user);
                 res.redirect("/auth/login");
