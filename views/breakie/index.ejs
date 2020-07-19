@@ -1,6 +1,6 @@
 <div class="col-md-8 grid">
     <p id="breakies" style="display: none"><%= JSON.stringify(breakies) %></p>
-    <% breakies.forEach( breakie => { %>
+    <% breakies.forEach( (breakie, index) => { %>
         <div class="cell m-1 line-height-60">
             <div class="mx-auto">
                 <img class="square-img" src="/image/<%= breakie.image %>" alt="">
@@ -8,7 +8,7 @@
             <h6 class="cell-title"><%= breakie.name %></h6>
             <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
             <p class="m-0 purple-text ">@<%= breakie.creator.username %></p>
-            <p class="m-0 purple-text ">Breakie distance</p>
+            <p class="m-0 purple-text "><%= distance[index] %> away</p>
             <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
             <a class="btn-original" href="/breakie/show/<%= breakie._id %>">Makan!</a>
         </div>
@@ -34,25 +34,29 @@
 
     let breakies = JSON.parse(document.getElementById("breakies").innerText);
     console.log(breakies);
-    // function initMap() {
-    //   var map = new google.maps.Map(
-    //     document.getElementById('map'), {zoom: 14, center: currentPos });
-    //     let marker = new google.maps.Marker({position: currentPos, map: map});
-    //     breakies.forEach( breakie => {
-    //         let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
-    //         let icon = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-    //         setMarker(sellerCoords, icon, map);
-    //     })
-    // }
+    function initMap() {
+      var map = new google.maps.Map(
+        document.getElementById('map'), {zoom: 14, center: currentPos });
+        let marker = new google.maps.Marker({position: currentPos, map: map});
+        breakies.forEach( breakie => {
+            let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
+            let icon = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+            setMarker(sellerCoords, icon, map);
+        })
+    }
 
-    // function setMarker(coordinates, iconType, currentMap) {
-    //     let market = new google.maps.Marker({position: coordinates, 
-    //         map: currentMap,
-    //         icon: iconType
-    //     });
-    // }
+    function setMarker(coordinates, iconType, currentMap) {
+        let market = new google.maps.Marker({position: coordinates, 
+            map: currentMap,
+            icon: iconType
+        });
+    }
+    breakies.forEach( breakie => {
+        let lat = parseFloat(breakie.creator.location.coordinates[0]);
+        let lng = parseFloat(breakie.creator.location.coordinates[1]);
 
+    })
 </script>
-<!-- <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap">
-</script> -->
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
+</script>

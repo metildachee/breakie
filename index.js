@@ -12,6 +12,7 @@ const Grid = require('gridfs-stream');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
+const axios = require('axios');
 require("dotenv").config();
 let gfs;
 
@@ -92,21 +93,12 @@ app.post("/", (req, res) => {
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
-    // Breakies.find().
-    // populate("creator").
-    // then( breakies =>  {
-    //     res.render("breakie/index", { breakies, key: process.env.GOOGLE_API_KEY })
-    // }).
-    // catch( err => console.log(err) )
-    // console.log(currentPos);
     if (currentPos == undefined) {
         console.log("current pos is undefined");
         currentPos = { lat: 1.3525, lng: 103.9447 };
     } else {
         console.log(currentPos + " is udpated");
     }
-
-    // setTimeout(main, 3000);
     console.log("meow", currentPos);
     try {
         let sortedUsers = await Users.
@@ -129,8 +121,28 @@ app.get("/", async (req, res) => {
                 if (breakie._id.equals(no)) sortedBreakies.push(breakie);
             })
         })
+        let addrBreakies = sortedBreakies.map( breakies => { 
+            return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
+        }).join("");
+        addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         
-        res.render("breakie/index", { breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+        // @ find distance
+        let distanceArray = [];
+        axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+            params: {
+                origins:currentPos.lat+","+currentPos.lng,
+                destinations:addrBreakies, 
+                mode: "walking|bicyling|bus",
+                key: process.env.GOOGLE_API_KEY
+            }
+        }).
+        then( data => {
+            data.data.rows.forEach( row => {
+                row.elements.forEach( value => { distanceArray.push(value.duration.text); })
+            })
+            res.render("breakie/index", { distance: distanceArray, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+        } ).
+        catch(err => console.log(err) );
     }
     catch(err) { console.log(err); }
 })
