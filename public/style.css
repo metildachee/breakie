@@ -66,6 +66,10 @@ header {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 }
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
 
 .cell {
     color: #EEEEEE;;
@@ -99,6 +103,7 @@ header {
 .margin-top-10 { margin-top: 10px; }
 .width-50 { width: 50vw; }
 .height-80 { height: 260px; }
+.height-50 { height: 200px; }
 .width-80 { width: 60vw; }
 
 /* display styles */
@@ -209,13 +214,8 @@ input[type="file"] { display: none; }
 }
 
 @media screen and (max-width: 700px) {
-    .width-50 {
-        width: 80vw;
-    }
-    #map {
-        display: none;
-    }
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .width-50 {  width: 80vw; }
+    #map { display: none; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }

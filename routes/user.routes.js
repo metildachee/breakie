@@ -15,4 +15,16 @@ router.get('/list', (req, res) => {
     catch(err => console.log(err));
 })
 
+router.get('/show/:id', (req, res) => {
+    Users.findById(req.params.id).
+    populate({
+        path: "publishes",
+        populate: { path: "ingredients", model: "Ingredient" }
+    }).
+    then( user => {
+        console.log(user);
+        res.render("user/show", { user });
+    })
+    
+})
 module.exports = router;
