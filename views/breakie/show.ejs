@@ -120,18 +120,38 @@
         document.getElementById("container").appendChild(div);
     }
     
-    // this happens when the purchase is clicked
+    //@desc when the user choose to pay by Card
     function purchaseClicked(){
-        
         let stripePublicKey = "<%= stripeAPIKey %>";
-        console.log(stripePublicKey);
-        console.log(parseFloat(document.getElementById("totalPrice").textContent) * 100);
-        
         let stripeHandler = StripeCheckout.configure({
             key: stripePublicKey,
             locale: "auto",
             token: function(token) {
-                console.log(token);
+                let breakieId = window.location.href.split("show/")[1];
+                let obj = {
+                    price: document.getElementById("totalPrice").textContent,
+                    items: [{
+                        breakie: breakieId,
+                        qty: parseInt(document.getElementById("qty").value)
+                    }]
+                };
+
+                fetch('/breakie/purchase/', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        stripeTokenId: token.id,
+                        items: obj
+                    })
+                }).
+                then(res => { return res.json(); }).
+                //@desc here we should inform that the transaction has been successful
+                //... and that the user can proceed to pick up their stuff
+                then( data => { console.log(data); }).
+                catch( err => { console.log(err); })
             }
         })
         stripeHandler.open({

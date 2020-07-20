@@ -1,8 +1,11 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const Breakies = require('../models/breakie.model');
 const Cuisines = require('../models/cuisine.model');
 const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+router.use(express.json());
 
 // @desc displays forms
 router.get("/new", async (req, res) => {
@@ -12,6 +15,21 @@ router.get("/new", async (req, res) => {
         res.render("breakie/new", { ingredients, cuisines });
     }
     catch(err) { console.log(err); }
+})
+
+//@desc using Stripe to charger customers
+router.post("/purchase", async(req, res) => {
+    stripe.charges.create({
+        amount: parseFloat(req.body.items.price) * 100,
+        source: req.body.stripeTokenId,
+        currency: 'sgd'
+    }).then( data => {
+        console.log("charge success");
+        res.json({ message: "successful"});
+    }).catch( err => { 
+        console.log(err);
+        res.status(500).end();
+    });
 })
 
 // @desc an order has been made
