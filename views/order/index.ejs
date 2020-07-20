@@ -15,7 +15,7 @@
                 <h5 class="orange-text center-text">You have no orders to collect. Start ordering!</h5>
             <% } %> 
             <div class="row mt-2">
-                <div class="col-md-7 center-text ">
+                <div class="col center-text ">
                     <% toCollect.forEach( collect => { %>
                         <div class="row grey-border">
                             <div class="col-6 justify-content-center">
@@ -66,9 +66,9 @@
                         </div>
                     <% }) %>
                 </div>
-                <div class="col">
+                <!-- <div class="col">
 
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -76,10 +76,10 @@
                 <h5 class="center-text orange-text" >You have no orders to prepare. Start cooking!</h5>
             <% } %>  
             <div class="row mt-2 grey-border">
-                <div class="col-md-7 center-text">
+                <div class="col center-text">
                     <% toPrepare.forEach( prepare => { %>
                         <div class="row">
-                            <div class="col-6 justify-content-center ">
+                            <div class="col-6 justify-content-center" id="toPrepare">
                                 <div class="justify-center">
                                     <% if (prepare.buyerContact) { %>
                                         <h5 class="purple-text"><i class="fas fa-phone"></i> <%= prepare.buyerContact %></h5>
@@ -127,9 +127,9 @@
                         </div>
                     <% }) %>
                 </div>
-                <div class="col">
+                <!-- <div class="col">
                     
-                </div>
+                </div> -->
             </div>
         </div>
     </div>   

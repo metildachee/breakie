@@ -1,0 +1,42 @@
+<p id="user" style="display: none;"><%= JSON.stringify(user) %></p>
+<div class="col-md">
+    <span class="orange-text"><span class="bold">@<%= user.username %></span> has <%= user.publishes.length %> breakies</span>
+    </br>
+    <span class="orange-text"><%= user.address %></span>
+</div>
+<div class="w-100"></div>
+<div class="col-md grid-4">
+    <% user.publishes.forEach( (breakie, index) => { %>
+        <div class="cell m-1">
+            <div class="height-60">
+                <div class="mx-auto">
+                    <img class="square-img" src="/image/<%= breakie.image %>" alt="">
+                </div>
+                <h6 class="cell-title"><%= breakie.name %></h6>
+                <span class="badge badge-pill badge-danger"><%= breakie.cuisine.type %></span>
+                <% breakie.ingredients.forEach( ing => { %>
+                    <span class="badge badge-pill badge-secondary"><%= ing.type %></span>
+                <% }) %>        
+            </div>
+            <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
+            <a class="btn-original" href="/breakie/show/<%= breakie._id %>">See more</a>
+        </div>
+    <% }) %>
+</div>
+<div class="w-100"></div>
+<div id="show-map" class="col-md mt-2"></div>
+
+<!-- <script>
+    function initMap() {
+        let user = JSON.parse(document.getElementById("user").innerText);
+        let sellerCoords = {lat: parseFloat(user.location.coordinates[1]), lng: parseFloat(user.location.coordinates[0])};
+        var map = new google.maps.Map(
+            document.getElementById('show-map'), {zoom: 14, center: sellerCoords });
+        let marker = new google.maps.Marker({position: sellerCoords, map: map});
+    }
+</script>
+
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
+</script> -->

@@ -47,15 +47,16 @@
             <% } %> 
         </div> 
     </div>
-
-<script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script defer>
     document.getElementById("qty").addEventListener('change', updateTotalPrice => {
         // document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);
         document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        
     });
 
     if (document.getElementById("immediatePost") != null)
-        document.getElementById("immediatePost").addEventListener('click', postRequest);
+        document.getElementById("immediatePost").addEventListener('click', purchaseClicked);
+        // document.getElementById("immediatePost").addEventListener('click', postRequest);
 
     if (document.getElementById("submitBtn") != null)
         document.getElementById("submitBtn").addEventListener('click', askForContacts);
@@ -118,7 +119,45 @@
         div.appendChild(submitBtn);
         document.getElementById("container").appendChild(div);
     }
+    
+    //@desc when the user choose to pay by Card
+    function purchaseClicked(){
+        let stripePublicKey = "<%= stripeAPIKey %>";
+        let stripeHandler = StripeCheckout.configure({
+            key: stripePublicKey,
+            locale: "auto",
+            token: function(token) {
+                let breakieId = window.location.href.split("show/")[1];
+                let obj = {
+                    price: document.getElementById("totalPrice").textContent,
+                    items: [{
+                        breakie: breakieId,
+                        qty: parseInt(document.getElementById("qty").value)
+                    }]
+                };
 
+                fetch('/breakie/purchase/', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        stripeTokenId: token.id,
+                        items: obj
+                    })
+                }).
+                then(res => { return res.json(); }).
+                //@desc here we should inform that the transaction has been successful
+                //... and that the user can proceed to pick up their stuff
+                then( data => { console.log(data); }).
+                catch( err => { console.log(err); })
+            }
+        })
+        stripeHandler.open({
+            amount: parseFloat(document.getElementById("totalPrice").textContent) * 100
+        });
+    }
     // function initMap() {
         
     //     let breakie = JSON.parse(document.getElementById("breakie").innerText);

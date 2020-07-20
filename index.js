@@ -172,7 +172,7 @@ app.get("/breakie/show/:id", (req, res) => {
     populate("creator ingredients cuisine").
     then( breakie => {
         gfs.files.findOne({ _id: breakie.image }, (err, file) => {
-            res.render("breakie/show", { breakie, file, key: process.env.GOOGLE_API_KEY })
+            res.render("breakie/show", { breakie, file, key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
         })
     }).
     catch(err => console.log(err) )

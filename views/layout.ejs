@@ -9,20 +9,27 @@
     <title>breakie</title>
 </head>
 <header>
+    <% let marginClass = "" %> 
     <% if (alerts.error) { %> 
+        <% marginClass = "mt-5" %> 
         <% alerts.error.forEach( err => { %> 
             <div class="alert alert-danger mb-0">
                 <%= err %> 
             </div>
         <% }) %>
-    <% } %>
+    <% } else { %>
+        <% marginClass = "" %> 
+    <% } %> 
     <% if (alerts.success) { %> 
+        <% marginClass = "mt-5" %> 
         <% alerts.success.forEach( succ => { %> 
             <div class="alert alert-primary mb-0">
                 <%= succ %> 
             </div>
         <% }) %>
-    <% } %>
+    <% } else { %>
+        <% marginClass = "" %> 
+    <% } %> 
     <nav class="navbar">
         <a id="header-breakie" href="/">breakie</a>
         
@@ -50,7 +57,7 @@
 </header>
 <body>
     <div id="container" class="container pt-5">
-        <div class="row">
+        <div class="row <%= marginClass %>">
             <%- body %>
         </div> 
     </div>
@@ -63,5 +70,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/all.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script> -->
+    <script>
+        // console.log("meow meow");
+        // var pusher = new Pusher('ee4062223bf3c3b3b636', { cluster: "ap1"});
+        // pusher.connection.bind('connected', function() {
+        //     axios.defaults.headers.common['X-Socket-Id'] = pusher.connection.socket_id;
+        // });
+    
+        // pusher.subscribe('notifications')
+        //     .bind('order_updated', function (order) {
+        //         console.log("order updated");
+        //         // if we're on the home page, show an "Updated" badge
+        //         if (window.location.pathname === "/order") {
+        //             // $('a[href="/posts/' + post._id + '"]').append('<span class="badge badge-primary badge-pill">Updated</span>');
+        //             $("#toPrepare").append('<span class="badge badge-primary badge-pill">Updated</span>');
+        //         }
+        //         var notification = new Notification("An order was just updated. Check it out.");
+        //         notification.onclick = function (event) {
+        //             window.location.href = '/order/';
+        //             event.preventDefault();
+        //             notification.close();
+        //         }
+        //     });
+        // Notifications.requestPermission().
+        // then( permission => {
+        //     if (permission == "granted") let notif = new Notification("You have a new order!");
+        // }).
+        // catch( err => console.log(err) );
+    
+    </script>
 </body>
 </html>
