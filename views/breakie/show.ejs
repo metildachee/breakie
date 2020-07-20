@@ -47,15 +47,16 @@
             <% } %> 
         </div> 
     </div>
-
-<script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script defer>
     document.getElementById("qty").addEventListener('change', updateTotalPrice => {
         // document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);
         document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        
     });
 
     if (document.getElementById("immediatePost") != null)
-        document.getElementById("immediatePost").addEventListener('click', postRequest);
+        document.getElementById("immediatePost").addEventListener('click', purchaseClicked);
+        // document.getElementById("immediatePost").addEventListener('click', postRequest);
 
     if (document.getElementById("submitBtn") != null)
         document.getElementById("submitBtn").addEventListener('click', askForContacts);
@@ -118,7 +119,25 @@
         div.appendChild(submitBtn);
         document.getElementById("container").appendChild(div);
     }
-
+    
+    // this happens when the purchase is clicked
+    function purchaseClicked(){
+        
+        let stripePublicKey = "<%= stripeAPIKey %>";
+        console.log(stripePublicKey);
+        console.log(parseFloat(document.getElementById("totalPrice").textContent) * 100);
+        
+        let stripeHandler = StripeCheckout.configure({
+            key: stripePublicKey,
+            locale: "auto",
+            token: function(token) {
+                console.log(token);
+            }
+        })
+        stripeHandler.open({
+            amount: parseFloat(document.getElementById("totalPrice").textContent) * 100
+        });
+    }
     // function initMap() {
         
     //     let breakie = JSON.parse(document.getElementById("breakie").innerText);
