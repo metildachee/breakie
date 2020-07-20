@@ -42,6 +42,7 @@ header {
 }
 .navbar-right { float: right; }
 .navbar-right > a { padding: 5px; }
+
 /* overwrite bootstrap tabs */
 .nav-tabs { border-bottom: none !important; }
 .nav-tabs .nav-link { 
@@ -99,6 +100,7 @@ header {
 .width-50 { width: 50vw; }
 .height-80 { height: 260px; }
 .width-80 { width: 60vw; }
+
 /* display styles */
 .rtl { direction: rtl; }
 .display-inline { display: inline !important; }
@@ -116,17 +118,12 @@ header {
     display: flex;
     justify-content: center;
 }
-
 .absolute-right {
     overflow: hidden;
     height: 100vh;
     right: 0px;
 }
-.mapContainer { 
-    position: fixed;
-    right: 0px;
-    top: 30px;
-}
+
 .no-cursor:hover { cursor: pointer; }
 .disabled { cursor: no-drop; }
 
@@ -197,6 +194,18 @@ input[type="file"] { display: none; }
     height: 100vh;  /* The height is 400 pixels */
     width: 33vw;
     background-color: red;
+}
+
+#show-map {
+    height: 100%;
+    width: 100%;
+    background-color: red;
+}
+
+.mapContainer { 
+    position: fixed;
+    right: 0px;
+    top: 30px;
 }
 
 @media screen and (max-width: 700px) {

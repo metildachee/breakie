@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breakie!</title>
+    <title>breakie</title>
 </head>
 <header>
     <% if (alerts.error) { %> 
@@ -27,15 +27,12 @@
         <a id="header-breakie" href="/">breakie</a>
         
         <% if (currentUser == null) { %>
-            <a href="/auth/login">login</a>
+            <a class="pr-3" href="/auth/login">login</a>
         <% } else { %>
             <ul class="navbar-right">
-                <!-- <p>Welcome back!  </p> -->
                 <% if (currentUser != null) { %> 
                     <div class="btn-group">
-                        <!-- <button type="button" class="btn-original btn-border-gradient dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
                         <p class="white-text dropdown-toggle pr-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@<%= currentUser.username %></p>
-                        <!-- </button> -->
                         <div class="dropdown-menu">
                           <a class="dropdown-item" href="/order/">Orders</a>
                           <a class="dropdown-item" href="/user/list/">My listings</a>
@@ -45,7 +42,6 @@
                           <a class="dropdown-item" href="/auth/logout">Logout</a>
                         </div>
                     </div>
-                    <span></span>
                 <% } %>     
             </ul>
         <% } %>
@@ -67,6 +63,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/all.min.js"></script>
-    <script src="/script.js" defer></script>
 </body>
 </html>

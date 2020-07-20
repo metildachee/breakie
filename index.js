@@ -125,7 +125,7 @@ app.get("/", async (req, res) => {
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         
-        // @ find distance
+        // @desc get distance
         let distanceArray = [];
         // axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
         //     params: {
@@ -172,7 +172,7 @@ app.get("/breakie/show/:id", (req, res) => {
     populate("creator ingredients cuisine").
     then( breakie => {
         gfs.files.findOne({ _id: breakie.image }, (err, file) => {
-            res.render("breakie/show", { breakie, file })
+            res.render("breakie/show", { breakie, file, key: process.env.GOOGLE_API_KEY })
         })
     }).
     catch(err => console.log(err) )

@@ -1,4 +1,4 @@
-<span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near you</span>
+<span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near <span id="currentAddr">you</span></span>
 <!-- <div class="container pr-0 mr-1"> -->
     <div class="row">
         <div class="col-md-8 grid">
@@ -25,6 +25,9 @@
         </div>
     </div>
 <!-- </div> -->
+<!-- <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
+</script> -->
 <script>
     let currentPos;
     // @desc on page loads
@@ -40,30 +43,30 @@
         else { console.log("an error occured");}
     })();
 
-    let breakies = JSON.parse(document.getElementById("breakies").innerText);
-    function initMap() {
-      var map = new google.maps.Map(
-        document.getElementById('map'), {zoom: 14, center: currentPos });
-        let marker = new google.maps.Marker({position: currentPos, map: map});
-        breakies.forEach( breakie => {
-            let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
-            let icon = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-            setMarker(sellerCoords, icon, map);
-        })
-    }
+    // let breakies = JSON.parse(document.getElementById("breakies").innerText);
+    // function initMap() {
+    //   var map = new google.maps.Map(
+    //     document.getElementById('map'), {zoom: 14, center: currentPos });
+    //     let marker = new google.maps.Marker({position: currentPos, map: map});
+    //     breakies.forEach( breakie => {
+    //         let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
+    //         let icon = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+    //         setMarker(sellerCoords, icon, map);
+    //     })
 
-    function setMarker(coordinates, iconType, currentMap) {
-        let market = new google.maps.Marker({position: coordinates, 
-            map: currentMap,
-            icon: iconType
-        });
-    }
+    //     let geocoder = new google.maps.Geocoder();
+    //     geocoder.geocode({ location: currentPos }, (results, status) => {
+    //         if (status == "OK")  {
+    //             console.log(results);
+    //             document.getElementById("currentAddr").textContent = results[5].formatted_address;
+    //         }
+    //     })
+    // }
 
-    breakies.forEach( breakie => {
-        let lat = parseFloat(breakie.creator.location.coordinates[0]);
-        let lng = parseFloat(breakie.creator.location.coordinates[1]);
-    })
-</script>
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
+    // function setMarker(coordinates, iconType, currentMap) {
+    //     let market = new google.maps.Marker({position: coordinates, 
+    //         map: currentMap,
+    //         icon: iconType
+    //     });
+    // }
 </script>
