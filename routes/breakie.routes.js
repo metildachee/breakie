@@ -33,6 +33,7 @@ router.post("/purchase/:id", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
+// @delete breakie by seller
 router.delete("/delete/:id", (req, res) => {
     Breakies.findByIdAndDelete(req.params.id).
     then( breakie => {

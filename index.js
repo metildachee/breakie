@@ -198,8 +198,7 @@ app.get('/image/:filename', (req, res) => {
 app.post('/breakie/update/:id', upload.single('file'), async (req, res) => {
     Breakies.findByIdAndUpdate(req.params.id, req.body).
     then( async breakie => {
-        if (req.file == undefined) { await Breakies.findByIdAndUpdate(req.params.id, { image: undefined }); }
-        else { await Breakies.findByIdAndUpdate(req.params.id, { image: req.file.filename }); }
+        if (req.file != undefined) await Breakies.findByIdAndUpdate(req.params.id, { image: req.file.filename });
         res.redirect(`/breakie/show/${breakie._id}`);
     }).
     catch( err => console.log(err) );
