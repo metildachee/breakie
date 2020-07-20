@@ -3,7 +3,7 @@ const Orders = require('../models/order.model');
 const Breakies = require('../models/breakie.model');
 
 // SHOW ORDERS -->
-// only for logged in users
+// @desc show orders
 router.get("/", async (req, res) => {
     try {
         let toPrepare = await Orders.find({ seller: req.user._id }).
@@ -23,6 +23,7 @@ router.get("/", async (req, res) => {
     catch(err) { console.log(err); }
 });
 
+// @desc update when order is finished
 router.post("/done/:id", async (req, res) => {
     try {
         await Orders.findByIdAndUpdate(req.params.id, { completed: true, paid: true });

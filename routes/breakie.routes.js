@@ -26,7 +26,8 @@ router.post("/purchase/:id", async (req, res) => {
         });
         order = await Orders.findByIdAndUpdate(order._id, { seller: value.items[0].breakie.creator });
         if (!req.body.buyerContact) await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
-        await Breakies.findByIdAndUpdate(req.params.id, { qty: req.body.qty });
+        console.log(req.body);
+        await Breakies.findByIdAndUpdate(req.params.id, { $inc: { qty: -parseInt(req.body.items[0].qty) }});
         res.redirect("/");
     }
     catch(err) { console.log(err); }

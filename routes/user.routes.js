@@ -23,8 +23,8 @@ router.get('/show/:id', (req, res) => {
     }).
     then( user => {
         console.log(user);
-        res.render("user/show", { user });
-    })
-    
+        res.render("user/show", { user, key: process.env.GOOGLE_API_KEY });
+    }).
+    catch( err => console.log(err) );
 })
 module.exports = router;

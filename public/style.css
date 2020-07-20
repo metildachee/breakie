@@ -103,7 +103,7 @@ header {
 .margin-top-10 { margin-top: 10px; }
 .width-50 { width: 50vw; }
 .height-80 { height: 260px; }
-.height-50 { height: 200px; }
+.height-60 { height: 210px; }
 .width-80 { width: 60vw; }
 
 /* display styles */
@@ -129,8 +129,6 @@ header {
     right: 0px;
 }
 
-.no-cursor:hover { cursor: pointer; }
-.disabled { cursor: no-drop; }
 
 /* buttons */
 .btn-border-gradient { border-color:#FF0000; }
@@ -169,13 +167,13 @@ header {
 }
 
 /* forms */
-input { 
+/* input { 
     border-radius: 10px;
     text-align: center;
     background-color: #ECD2BF;
     border-color: #D9376E;
     color: #D9376E;
-}
+} */
 
 /* show page */
 .show-cal-price span:nth-child(2n) {
@@ -211,6 +209,12 @@ input[type="file"] { display: none; }
     position: fixed;
     right: 0px;
     top: 30px;
+}
+
+#indi-breakie-map {
+    width: 100%;
+    height: 30vh;
+    background-color: red;
 }
 
 @media screen and (max-width: 700px) {

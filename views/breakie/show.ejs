@@ -7,8 +7,9 @@
                 <a class="orange-text" href="/breakie/edit/<%= breakie._id %>"><i class="fas fa-edit"></i></a>
             <% } %>    
             <img class="display-block" src="/image/<%= breakie.image %>" alt="Meow">
-            <h5 class="purple-text" id="creator">@<%= breakie.creator.username %></h5>
-            <p class="grey-text"><%= breakie.desc %></p>
+            <a class="purple-text" id="creator" href="/user/show/<%= breakie.creator._id %>">@<%= breakie.creator.username %></a>
+            <p class="grey-text mb-1"><%= breakie.desc %></p>
+            <span class="medium-text purple-text" id="addr"><%= breakie.creator.address %></span>
             <h5 class="orange-text">Ingredients</h5>
             <% breakie.ingredients.forEach( ing => { %>
                 <span class="badge badge-pill badge-secondary"><%= ing.type %></span>
@@ -16,37 +17,41 @@
         </div>
     </div>
     <div class="col-md-9">
-        <a class="medium-text purple-text" id="addr" href="/user/show"><%= breakie.creator.address %></a>
-        <div id="show-map">
-            the mappppp....
+        <div id="indi-breakie-map" class="mt-2">
+            Google Maps
         </div>
-        <div class="show-cal-price purple-text medium-text">
-            <div class="display-inline">
-                <span>$</span><span id="price"><%= breakie.price %></span> 
-            </div>
-            <span>x</span>     
-            <span>Quantity:</span> 
-            <% let buttonText = "Purchase" %>
+        <div class="show-cal-price purple-text medium-text center-text mt-2">
+            <% let buttonText = "Place order" %>
             <% let disabled = "" %>  
+
             <% if (breakie.qty <= 0) { %>
-               <p>This dish is so populate it's sold out! Come back another time.</p>
+               <p>This dish is sold out! Come back another time.</p>
                <% buttonText = "Sold out" %>
                <% disabled = "disabled" %>  
             <% } else { %>
-                <span><input class="display-inline" type="number" value="1" min="1" name="qty" id="qty" max="<%= breakie.qty %>" required></span>
+                <div class="display-inline">
+                    <span>$</span><span id="price"><%= breakie.price %>   x</span> 
+                </div>    
+                <input class="center-text display-inline form-control" style="width: 50px;" type="number" value="1" min="1" name="qty" id="qty" max="<%= breakie.qty %>" required>
             <% } %>
-            <span><button class="display-inline btn-gradient">Total price: $<span id="totalPrice"><%= breakie.price %></span></button></span>
-            <% if (currentUser != null) { %>
-                <button type="submit" <%= disabled %> class="btn-gradient mt-3" id="immediatePost" type="submit"><%= buttonText %></button>
-            <% } else { %>
-                <button type="submit" <%= disabled %> class="btn-gradient mt-3" id="submitBtn" type="submit"><%= buttonText %></button>
-            <% } %>
+            <% if (currentUser == null) { %> 
+                <!-- person does not have account -->
+                <p class="center-text mt-2 mb-0">Total: $<span id="totalPrice">1</span></p>
+                <button type="submit" <%= disabled %> class="btn-gradient mt-2" id="submitBtn" type="submit"><%= buttonText %></button>
+            <% } else if (!currentUser._id.equals(breakie.creator._id)) { %>
+                <!-- this person has an account  -->
+                <% if (breakie.qty > 0) { %> 
+                    <p class="center-text mt-2 mb-0">Total: $<span id="totalPrice">1</span></p>
+                <% } %> 
+                <button type="submit" <%= disabled %> class="btn-gradient mt-2" id="immediatePost" type="submit"><%= buttonText %></button>
+            <% } %> 
         </div> 
     </div>
 
 <script>
     document.getElementById("qty").addEventListener('change', updateTotalPrice => {
-        document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);    
+        // document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);
+        document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        
     });
 
     if (document.getElementById("immediatePost") != null)
@@ -119,11 +124,10 @@
     //     let breakie = JSON.parse(document.getElementById("breakie").innerText);
     //     let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
     //     var map = new google.maps.Map(
-    //         document.getElementById('show-map'), {zoom: 14, center: sellerCoords });
+    //         document.getElementById('indi-breakie-map'), {zoom: 14, center: sellerCoords });
     //     let marker = new google.maps.Marker({position: sellerCoords, map: map});
     // }
 </script>
-
 
 <!-- <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
