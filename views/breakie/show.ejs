@@ -90,7 +90,7 @@
             }).
             then( result => {
                 if (!obj.buyerContact && result.value)
-                    window.location = "/";
+                    window.location = "/order/";
             })
          }).
         fail( err => console.log(err) );

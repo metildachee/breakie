@@ -3,8 +3,6 @@ const Breakies = require('../models/breakie.model');
 const Cuisines = require('../models/cuisine.model');
 const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
-const Users = require('../models/user.model');
-const Breakie = require('../models/breakie.model');
 
 // @desc displays forms
 router.get("/new", async (req, res) => {
@@ -26,9 +24,8 @@ router.post("/purchase/:id", async (req, res) => {
         });
         order = await Orders.findByIdAndUpdate(order._id, { seller: value.items[0].breakie.creator });
         if (!req.body.buyerContact) await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
-        console.log(req.body);
         await Breakies.findByIdAndUpdate(req.params.id, { $inc: { qty: -parseInt(req.body.items[0].qty) }});
-        res.redirect("/");
+        res.redirect("/order/");
     }
     catch(err) { console.log(err); }
 })

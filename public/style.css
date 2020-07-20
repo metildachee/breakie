@@ -37,8 +37,8 @@ header a { color: white; }
 header {
     position: fixed;
     width: 100vw;
-    height: 20vh;
     z-index: 1;
+    box-shadow: 0px 0px 9px 3px rgba(41,41,41,.25);
 }
 .navbar-right { float: right; }
 .navbar-right > a { padding: 5px; }
@@ -165,6 +165,7 @@ header {
     margin: auto;
     border: 1px solid none;
 }
+.btn-delete { border-radius: 10px !important; }
 
 /* forms */
 /* input { 

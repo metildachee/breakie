@@ -195,7 +195,7 @@ app.get('/image/:filename', (req, res) => {
 });
 
 // @desc updates breakie file with form data
-app.post('/breakie/update/:id', upload.single('file'), async (req, res) => {
+app.post('/breakie/update/:id', checkUser, upload.single('file'), async (req, res) => {
     Breakies.findByIdAndUpdate(req.params.id, req.body).
     then( async breakie => {
         if (req.file != undefined) await Breakies.findByIdAndUpdate(req.params.id, { image: req.file.filename });
@@ -205,10 +205,9 @@ app.post('/breakie/update/:id', upload.single('file'), async (req, res) => {
 })
 
 app.use("/auth", require("./routes/auth.routes.js"));
-app.use("/breakie", require("./routes/breakie.routes.js"));
-app.use("/order", require("./routes/order.routes.js"));
+app.use("/breakie", checkUser, require("./routes/breakie.routes.js"));
+app.use("/order", checkUser, require("./routes/order.routes.js"));
 app.use("/user", require("./routes/user.routes.js"));
 app.use("/", require("./routes/breakie.routes.js"));
-
   
 app.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));

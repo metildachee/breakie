@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const bcrypt = require('bcrypt');
 const Users = require("../models/user.model");
+const checkUser = require('../setup/checkUser');
 
 // @desc displays the current user's published breakies
-router.get('/list', (req, res) => {
+router.get('/list', checkUser, (req, res) => {
     Users.findById(req.user._id).
     populate({
         path: "publishes",

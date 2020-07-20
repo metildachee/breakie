@@ -14,10 +14,10 @@
             <% if (toCollect.length == 0) { %> 
                 <h5 class="orange-text center-text">You have no orders to collect. Start ordering!</h5>
             <% } %> 
-            <div class="row mt-2 grey-border">
-                <div class="col-md-7 center-text">
+            <div class="row mt-2">
+                <div class="col-md-7 center-text ">
                     <% toCollect.forEach( collect => { %>
-                        <div class="row">
+                        <div class="row grey-border">
                             <div class="col-6 justify-content-center">
                                 <div class="justify-center">
                                     <h5 class="purple-text"><i class="fas fa-map-marker-alt"></i><%= collect.seller.address %></h5>
@@ -60,7 +60,7 @@
                                     </form>
                                 <% } %>
                                 <% if (!collect.completed && itemsComplete && !collect.cancelled) { %>
-                                    <a class="btn btn-danger mt-4" href="/order/cancel/<%= collect._id %>">Cancel</a>
+                                    <a class="btn btn-danger btn-delete mt-4" href="/order/cancel/<%= collect._id %>">Cancel</a>
                                 <% } %>
                             </div>
                         </div>
