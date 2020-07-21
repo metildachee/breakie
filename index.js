@@ -113,19 +113,21 @@ app.get("/", async (req, res) => {
         let breakies = creators.map( creator => { return creator.publishes; });
         breakies = breakies.flat();
         let order = breakies;
-        breakies = await Breakies.find({ _id: { $in: breakies }}).populate("creator");
+        breakies = await Breakies.find({ _id: { $in: breakies }}).populate("creator ingredients cuisine");
         let sortedBreakies = [];
         order.forEach( no => {
             breakies.forEach( breakie => {
                 if (breakie._id.equals(no)) sortedBreakies.push(breakie);
             })
         })
-        let addrBreakies = sortedBreakies.map( breakies => { 
-            return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
-        }).join("");
-        addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
-        
+        console.log(sortedBreakies);
+        console.log(sortedBreakies[0].ingredients);
         // @desc get distance
+        // let addrBreakies = sortedBreakies.map( breakies => { 
+        //     return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
+        // }).join("");
+        // addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
+        
         let distanceArray = [];
         // axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
         //     params: {

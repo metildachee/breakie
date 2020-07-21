@@ -10,9 +10,13 @@
                             <img class="square-img" src="/image/<%= breakie.image %>" alt="">
                         </div>
                         <h6 class="cell-title"><%= breakie.name %></h6>
-                        <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
+                        <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %>
+                        </p>
                         <a class="m-0 purple-text" href="/user/show/<%= breakie.creator._id %>">@<%= breakie.creator.username %></a>
-                        <p class="m-0 purple-text "><%= distance[index] %> away</p>
+                        <p class="m-0 purple-text "><%= distance[index] %> away <span class="badge badge-secondary"><%= breakie.cuisine.type %></span></p>
+                        <% if (breakie.qty <= 0) { %>
+                            <span class="badge badge-warning">Sold out</span>
+                        <% } %> 
                     </div>
                     <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
                     <a class="btn-original" href="/breakie/show/<%= breakie._id %>">See more</a>

@@ -16,7 +16,10 @@
                 <span class="badge badge-pill badge-danger"><%= breakie.cuisine.type %></span>
                 <% breakie.ingredients.forEach( ing => { %>
                     <span class="badge badge-pill badge-secondary"><%= ing.type %></span>
-                <% }) %>        
+                <% }) %>      
+                <% if (breakie.qty <= 0) { %>
+                    <span class="badge badge-warning">Sold out</span>
+                <% } %> 
             </div>
             <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
             <a class="btn-original" href="/breakie/show/<%= breakie._id %>">See more</a>
