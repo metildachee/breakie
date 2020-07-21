@@ -32,7 +32,7 @@
         <% marginClass = "" %> 
     <% } %> 
     <nav class="navbar">
-        <div>
+        <div class="align-x">
             <a id="header-breakie" href="/">breakie</a>
             <!-- <form class="form-inline display-inline my-2 my-lg-0 pl-2">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search for anything" id="search">
@@ -59,7 +59,7 @@
             <ul class="navbar-right">
                 <% if (currentUser != null) { %> 
                     <div class="btn-group">
-                        <p class="white-text dropdown-toggle pr-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@<%= currentUser.username %></p>
+                        <p id="drop-down-header" class="white-text dropdown-toggle pr-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@<%= currentUser.username %></p>
                         <div class="dropdown-menu">
                           <a class="dropdown-item" href="/order/">Orders</a>
                           <a class="dropdown-item" href="/user/list/">My listings</a>

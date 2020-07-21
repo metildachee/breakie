@@ -19,6 +19,9 @@ const userSchema = Schema({
         required: true,
         type: String
     },
+    bankAcc: {
+        type: Schema.Types.ObjectId,
+    },
     password: {
         required: true,
         type: String

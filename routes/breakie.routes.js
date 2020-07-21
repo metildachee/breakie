@@ -6,6 +6,7 @@ const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const Users = require('../models/user.model');
+const mongooseAlgolia = require('mongoose-algolia');
 router.use(express.json());
 
 // @desc displays forms
@@ -79,11 +80,13 @@ router.post("/purchase/:id", async (req, res) => {
 // @delete breakie by seller
 router.delete("/delete/:id", (req, res) => {
     Breakies.findByIdAndDelete(req.params.id).
-    then( breakie => {
+    then( async breakie => {
         Orders.aggregate([{ $match: { items: breakie._id}}]).
         then( order => { $pull: { items: breakie._id }}).
         catch( err => console.log(err) );
 
+        await Breakies.SyncToAlgolia();
+        await Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
         res.redirect("/user/list");
     }).
     catch(err => console.log(err) );

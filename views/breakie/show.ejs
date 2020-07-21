@@ -4,7 +4,7 @@
             <h5 class="orange-text display-inline"><%= breakie.name %>  </h5>
             <span class="badge badge-pill badge-secondary"><%= breakie.cuisine.type %></span>
             <% if (currentUser != null && currentUser._id.equals(breakie.creator._id) ) { %>
-                <a class="orange-text" href="/breakie/edit/<%= breakie._id %>"><i class="fas fa-edit"></i></a>
+                <a class="orange-text ml-2" href="/breakie/edit/<%= breakie._id %>"><i class="fas fa-edit"></i></a>
             <% } %>    
             <img class="display-block" src="/image/<%= breakie.image %>" alt="Meow">
             <a class="purple-text" id="creator" href="/user/show/<%= breakie.creator._id %>">@<%= breakie.creator.username %></a>
@@ -44,6 +44,8 @@
     </div>
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script defer>
+    let sellerHasBankAcc = <%= sellerHasBankAcc %>;
+    console.log(sellerHasBankAcc);
     let qty = document.getElementById("qty");
     let totalPrice = document.getElementById("totalPrice");
     let beautifulOrange = "#ff8e3c";
@@ -58,17 +60,17 @@
     function purchase() {
         let user = <%- JSON.stringify(user) %>;
         user = JSON.parse(user);
-        if (user.bankAcc) { return placeOrder; } // place order directly
+        if (user.bankAcc && sellerHasBankAcc) { return placeOrder; } // place order directly
         Swal.fire({
             title: "How would you like to pay?",
-            confirmButtonText: "Add card",
-            showCancelButton: true,
-            cancelButtonText: "Cash",
+            confirmButtonText: "Cash",
+            showCancelButton: sellerHasBankAcc ? true : false, // @change this to false to show Stripe activity
+            cancelButtonText: "Card",
             confirmButtonColor: beautifulOrange
         }).
         then( result => {
-            if (result.value) payByCard(); // for now, this sends to me
-            else payByCash();
+            if (result.value) payByCash(); // for now, this sends to me
+            else payByCard();
         })
     }
     

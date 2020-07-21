@@ -33,6 +33,7 @@ header {
 }
 .navbar-right { float: right; }
 .navbar-right > a { padding: 5px; }
+#drop-down-header:hover { cursor: pointer; }
 
 /* overwrite bootstrap tabs */
 .nav-tabs .nav-link { 
@@ -46,7 +47,10 @@ header {
 .navbar-right > .btn-group > p{  margin-bottom: 0rem !important; }
 #header-breakie, a { text-decoration: none !important; }
 #header-breakie:hover, a:hover { color: #D9376E; }
-
+.align-x {
+    display: flex;
+    align-items: center;
+}
 /* testing */
 .red { background-color: red; }
 .grid {
@@ -167,6 +171,12 @@ header {
 
 /* show page */
 .show-cal-price span:nth-child(2n) { padding: 5px; }
+.top-right {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    color: #d8d5d6;
+}
 
 /* order page */
 .grey-border {
@@ -259,4 +269,5 @@ display: none;
     #map { display: none; }
     .grid { grid-template-columns: repeat(2, 1fr); }
     .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .top-right { display: none; }
 }

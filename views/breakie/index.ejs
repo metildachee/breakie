@@ -14,7 +14,7 @@
                         <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %>
                         </p>
                         <a class="m-0 purple-text" href="/user/show/<%= breakie.creator._id %>">@<%= breakie.creator.username %></a>
-                        <p class="m-0 purple-text "><%= distance[index] %> away <span class="badge badge-secondary"><%= breakie.cuisine.type %></span></p>
+                        <span class="m-0 purple-text "><%= distance[index] %> away <span class="badge badge-secondary"><%= breakie.cuisine.type %></span></span>
                         <% if (breakie.qty <= 0) { %>
                             <span class="badge badge-warning">Sold out</span>
                         <% } %> 

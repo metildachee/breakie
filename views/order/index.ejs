@@ -16,12 +16,14 @@
             <% } %> 
             <div class="row mt-2">
                 <div class="col center-text ">
-                    <% toCollect.forEach( collect => { %>
+                    <% for (let i = toCollect.length - 1; i >= 0; i--) { %> 
+                        <% let collect = toCollect[i]; %> 
+                        <% let orderTime = (collect.createdAt + "").split(" ")[1] + " " + (collect.createdAt + "").split(" ")[2] + " " + (collect.createdAt + "").split(" ")[4].split(":").splice(0, 2).join(":"); %>
                         <div class="row grey-border pt-2 pb-2">
                             <div class="col-6 justify-content-center">
                                 <div class="justify-center">
-                                    <h5 class="purple-text mb-1"><i class="fas fa-map-marker-alt"></i><%= collect.seller.address %></h5>
-                                    <p class="purple-text pb-0 mb-0">@ <%= collect.seller.username %></p>
+                                    <h5 class="purple-text mb-1"><i class="fas fa-map-marker-alt"></i> <%= collect.seller.address %></h5>
+                                    <p class="purple-text pb-0 mb-0">@<%= collect.seller.username %></p>
                                     <% let itemsComplete = true %>
                                     <% collect.items.forEach( item => { %>
                                         <% if (item.breakie == null) { %>
@@ -30,12 +32,12 @@
                                         <% } else { %>
                                             <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>
                                         <% } %>
-                                    <% }) %>
+                                    <% }) %> 
                                     <p class="orange-text bold mb-0">Total: $ <%= collect.price  == null ? "0.00" : collect.price %></p>
-
                                 </div>
                             </div>
                             <div class="col">
+                                <span class="top-right"><%= orderTime %></span>
                                 <% if (collect.paid) { %> 
                                     <span class="badge badge-pill badge-secondary">Paid</span>
                                 <% } else { %>
@@ -64,7 +66,7 @@
                                 <% } %>
                             </div>
                         </div>
-                    <% }) %>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -74,7 +76,9 @@
             <% } %>  
             <div class="row mt-2">
                 <div class="col center-text">
-                    <% toPrepare.forEach( prepare => { %>
+                    <% for (let i = toPrepare.length - 1; i >= 0; i--) { %> 
+                        <% let prepare = toPrepare[i]; %> 
+                        <% let prepareTime = (prepare.createdAt + "").split(" ")[1] + " " + (prepare.createdAt + "").split(" ")[2] + " " + (prepare.createdAt + "").split(" ")[4].split(":").splice(0, 2).join(":"); %>
                         <div class="row grey-border pt-2 pb-2">
                             <div class="col-6 justify-content-center" id="toPrepare">
                                 <div class="justify-center">
@@ -94,6 +98,7 @@
                                 </div>
                             </div>
                             <div class="col">
+                                <span class="top-right"><%= prepareTime %></span>
                                 <% if (prepare.paid) { %> 
                                     <span class="badge badge-pill badge-secondary">Paid</span>
                                 <% } else { %>
@@ -119,7 +124,7 @@
                                 <% } %>
                             </div>
                         </div>
-                    <% }) %>
+                    <% } %>
                 </div>
             </div>
         </div>

@@ -161,8 +161,8 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
         else breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
         await Users.findByIdAndUpdate(req.user._id, { $push: { publishes: breakie._id }});
 
-        Breakies.SyncToAlgolia();
-        Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
+        await Breakies.SyncToAlgolia();
+        await Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
         res.redirect("/");
     }
     catch(err) { console.log(err); }
@@ -174,8 +174,12 @@ app.get("/breakie/show/:id", (req, res) => {
     Breakies.findById(req.params.id).
     populate("creator ingredients cuisine").
     then( breakie => {
-        gfs.files.findOne({ _id: breakie.image }, (err, file) => {
-            res.render("breakie/show", { breakie, file, user: JSON.stringify(res.locals.currentUser), key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
+        Users.findById(breakie.creator._id).
+        then( seller => {
+            let sellerHasBankAcc = (seller.bankAcc == null) ? false : true;
+            gfs.files.findOne({ _id: breakie.image }, (err, file) => {
+                res.render("breakie/show", { breakie, sellerHasBankAcc, file, user: JSON.stringify(res.locals.currentUser), key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
+            })
         })
     }).
     catch(err => console.log(err) )
