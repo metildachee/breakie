@@ -5,6 +5,7 @@ const Cuisines = require('../models/cuisine.model');
 const Ingredients = require('../models/ingredient.model');
 const Orders = require('../models/order.model');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const Users = require('../models/user.model');
 router.use(express.json());
 
 // @desc displays forms
@@ -18,27 +19,45 @@ router.get("/new", async (req, res) => {
     catch(err) { console.log(err); }
 })
 
-//@desc using Stripe to charger customers
-router.post("/purchase", async(req, res) => {
-    // stripe.charges.create({
-    //     amount: parseFloat(req.body.items.price) * 100,
-    //     source: req.body.stripeTokenId,
-    //     currency: 'sgd'
-    // }).then( data => {
-    //     console.log("charge success");
-    //     res.json({ message: "successful"});
-    // }).catch( err => { 
-    //     console.log(err);
-    //     res.status(500).end();
-    // });
+// @desc makes an order, under
+// @route under .post('/purchase)
+async function makeOrder(hasPaid, body, userId) {
+    try {
+        let breakieId = await (await Breakies.findById(body.items.items[0].breakie));
+        let order = await Orders.create({
+            items: body.items.items,
+            buyer: userId,
+            paid: hasPaid,
+            seller: breakieId.creator,
+            price: body.items.price,
+        });
+        await Users.findByIdAndUpdate(userId, { $push: { orders: order._id }});
+        await Breakies.findByIdAndUpdate(breakieId._id, { $inc: { qty: -parseInt(body.items.items[0].qty) }});
+    }
+    catch(err) { console.log(err); }
+}
 
+//@desc using Stripe to charger customers
+router.post("/purchase/", async(req, res) => {
+    console.log(req.body.items);
+    let hasPaid = false;
     if (req.body.stripeTokenId) {
-        console.log("card payment");
+        stripe.charges.create({
+            amount: parseFloat(req.body.items.price) * 100,
+            source: req.body.stripeTokenId,
+            currency: 'sgd'
+        }).
+        then( data => { 
+            console.log("Payment with card successful");
+            makeOrder(true, req.body, req.user._id);
+        }).
+        catch( err => { 
+            console.log(err);
+            res.status(500).end();
+        });
     }
-    else {
-        console.log("cash payment");
-    }
-    res.json({ message: "successful"});
+    else { makeOrder(false, req.body, req.user._id); }
+    res.json({ message: "successful"});  
 })
 
 // @desc an order has been made
@@ -52,18 +71,6 @@ router.post("/purchase/:id", async (req, res) => {
         order = await Orders.findByIdAndUpdate(order._id, { seller: value.items[0].breakie.creator });
         if (!req.body.buyerContact) await Orders.findByIdAndUpdate(order._id, { buyer: req.user._id });
         await Breakies.findByIdAndUpdate(req.params.id, { $inc: { qty: -parseInt(req.body.items[0].qty) }});
-        /////// PUSHER 
-        // let Pusher = require('pusher');
-        // let pusher = new Pusher({
-        //     appId: process.env.PUSHER_APP_ID,
-        //     key: process.env.PUSHER_APP_KEY,
-        //     secret: process.env.PUSHER_APP_SECRET,
-        //     cluster: process.env.PUSHER_APP_CLUSTER
-        // });
-
-        // pusher.trigger('notifications', 'order_updated', order , req.headers['x-socket-id']);
-        // console.log("meowmeow");
-        /////
         res.redirect("/order/");
     }
     catch(err) { console.log(err); }
