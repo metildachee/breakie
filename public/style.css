@@ -156,7 +156,7 @@ header {
 .btn-delete { border-radius: 10px !important; }
 .btn-original:hover { background-color: rgb(228, 218, 218); }
 .btn-gradient:hover { background: repeating-radial-gradient(#EA7070 0.37%, #C74B4B 0.37%, #F29641 99.61%), #FF8E3C; }
-
+.btn-width { width: 100px; }
 /* forms */
 /* input { 
     border-radius: 10px;
@@ -167,20 +167,14 @@ header {
 } */
 
 /* show page */
-.show-cal-price span:nth-child(2n) {
-    padding: 5px;
-}
+.show-cal-price span:nth-child(2n) { padding: 5px; }
 
 /* order page */
 .grey-border {
     border-top: 1px solid #E5E5E5;
     border-bottom: 1px solid #E5E5E5;
 }
-
-#imageInput {
-    width: 100%;
-}
-
+#imageInput { width: 100%; }
 input[type="file"] { display: none; }
 
 /* maps */
@@ -208,12 +202,11 @@ input[type="file"] { display: none; }
     background-color: red;
 }
 
-
 /* algolia */
 .aa-input-container {
     display: inline-block;
     position: relative;
-  }
+}
   .aa-input-search {
     width: 200px;
     padding: 5px 28px 5px 12px;

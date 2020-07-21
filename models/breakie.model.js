@@ -26,8 +26,6 @@ const breakieSchema = Schema({
     creator: {type: Schema.Types.ObjectId, ref: "User"}
 }, { timestamps: true });
 
-// breakieSchema.index({"$**": 'text'});
-
 breakieSchema.plugin(mongooseAlgolia, {
     appId: "73KCNG918X",
     apiKey: process.env.ALGOLIA_API_KEY,

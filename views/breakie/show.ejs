@@ -21,13 +21,9 @@
             Google Maps
         </div>
         <div class="show-cal-price purple-text medium-text center-text mt-2">
-            <% let buttonText = "Place order" %>
-            <% let disabled = "" %>  
 
             <% if (breakie.qty <= 0) { %>
                <p>This dish is sold out! Come back another time.</p>
-               <% buttonText = "Sold out" %>
-               <% disabled = "disabled" %>  
             <% } else { %>
                 <div class="display-inline">
                     <span>$</span><span id="price"><%= breakie.price %>   x</span> 
@@ -36,106 +32,88 @@
             <% } %>
             <% if (currentUser == null) { %> 
                 <!-- person does not have account -->
-                <p class="center-text mt-2 mb-0">Total: $<span id="totalPrice">1</span></p>
-                <button type="submit" <%= disabled %> class="btn-gradient mt-2" id="submitBtn" type="submit"><%= buttonText %></button>
+                <a class="btn-gradient mt-2 btn-width" href="/auth/login">Login</a>
             <% } else if (!currentUser._id.equals(breakie.creator._id)) { %>
-                <!-- this person has an account  -->
+                <!-- this person has an account && > qty -->
                 <% if (breakie.qty > 0) { %> 
-                    <p class="center-text mt-2 mb-0">Total: $<span id="totalPrice">1</span></p>
+                    <p class="center-text mt-2 mb-0">Total: $<span id="totalPrice"><%= breakie.price %></span></p>
+                    <button type="submit" class="btn-gradient mt-2" id="immediatePost" type="submit">Order</button>
                 <% } %> 
-                <button type="submit" <%= disabled %> class="btn-gradient mt-2" id="immediatePost" type="submit"><%= buttonText %></button>
             <% } %> 
         </div> 
     </div>
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script defer>
-    document.getElementById("qty").addEventListener('change', updateTotalPrice => {
-        // document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);
-        document.getElementById("totalPrice").textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        
+    let qty = document.getElementById("qty");
+    let totalPrice = document.getElementById("totalPrice");
+    let beautifulOrange = "#ff8e3c";
+    //@desc updates the price
+    qty.addEventListener('change', updateTotalPrice => {
+        totalPrice.textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        
     });
 
-    if (document.getElementById("immediatePost") != null)
-        document.getElementById("immediatePost").addEventListener('click', purchaseClicked);
-        // document.getElementById("immediatePost").addEventListener('click', postRequest);
+    document.getElementById("immediatePost").addEventListener('click', purchase);
 
-    if (document.getElementById("submitBtn") != null)
-        document.getElementById("submitBtn").addEventListener('click', askForContacts);
-
-    function postRequest() {
+    // @desc event when purchase button is called
+    function purchase() {
+        let user = <%- JSON.stringify(user) %>;
+        user = JSON.parse(user);
+        if (user.bankAcc) { return placeOrder; } // place order directly
+        Swal.fire({
+            title: "How would you like to pay?",
+            confirmButtonText: "Add card",
+            showCancelButton: true,
+            cancelButtonText: "Cash",
+            confirmButtonColor: beautifulOrange
+        }).
+        then( result => {
+            if (result.value) payByCard(); // for now, this sends to me
+            else payByCash();
+        })
+    }
+    
+    // @desc helper functions 
+    function getObj() {
         let breakieId = window.location.href.split("show/")[1];
-        let obj = {
+        return obj = {
             price: document.getElementById("totalPrice").textContent,
             items: [{
                 breakie: breakieId,
                 qty: parseInt(document.getElementById("qty").value)
             }]
         };
-        if (document.getElementById("contactInfo")) // this person is not logged in
-            obj.buyerContact = document.getElementById("contactInfo").value;
-        $.post(`/breakie/purchase/${breakieId}`, obj).
-        done( () => {
-            let title = "Order has been placed successfully!"; 
-            let text = "";
-            let confirmButtonText = "";
-            if (obj.buyerContact) {
-                text = `Please be at ${document.getElementById('addr').textContent} as soon as possible!
-                            ${document.getElementById('creator').textContent} will be waiting for you!
-                            We recommend taking a screenshot to remember the location!`;
-                confirmButtonText = "Got it!"
-            }
-            else confirmButtonText = "View order"
-            Swal.fire({
-                title: title,
-                text: text,
-                confirmButtonText: confirmButtonText
-            }).
-            then( result => {
-                if (!obj.buyerContact && result.value)
-                    window.location = "/order/";
-            })
-         }).
-        fail( err => console.log(err) );
+    }
+    function successSwal() {
+        Swal.fire({
+            title: "Your order has been placed successfully.",
+            text: `${document.getElementById('creator').textContent} is waiting for you!`,
+            confirmButtonText: "Got it",
+            confirmButtonColor: beautifulOrange
+        });
     }
 
-    function askForContacts(event) {
-        let phoneNumber = document.createElement("input");
-        let para = document.createElement("p");
-        let submitBtn = document.createElement("button");
-        let div = document.createElement("div");
-        phoneNumber.placeholder = "9xxxxxx";
-        phoneNumber.id = "contactInfo";
-        phoneNumber.required = true;
-        phoneNumber.type = "number";
-        para.textContent = "You are not logged in, please enter your contact information instead:";
-        submitBtn.id = "secBtn";
-        submitBtn.classList.add("btn-gradient");
-        submitBtn.classList.add("mt-3");
-        submitBtn.textContent = "Purchase";
-        submitBtn.addEventListener('click', postRequest);
-        document.getElementById("submitBtn").remove();
-        div.classList.add("center-text");
-        div.appendChild(para);
-        div.appendChild(phoneNumber);
-        div.appendChild(submitBtn);
-        document.getElementById("container").appendChild(div);
+    // @desc paying by cash
+    function payByCash() {
+        fetch('/breakie/purchase/', {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ items: getObj() })
+        }).
+        then(res => { return res.json(); }).
+        then( data => { successSwal(); }).
+        catch( err => { console.log(err); })
     }
-    
+
     //@desc when the user choose to pay by Card
-    function purchaseClicked(){
+    function payByCard(){
         let stripePublicKey = "<%= stripeAPIKey %>";
         let stripeHandler = StripeCheckout.configure({
             key: stripePublicKey,
             locale: "auto",
             token: function(token) {
-                let breakieId = window.location.href.split("show/")[1];
-                let obj = {
-                    price: document.getElementById("totalPrice").textContent,
-                    items: [{
-                        breakie: breakieId,
-                        qty: parseInt(document.getElementById("qty").value)
-                    }]
-                };
-
                 fetch('/breakie/purchase/', {
                     method: "POST",
                     headers: {
@@ -144,13 +122,11 @@
                     },
                     body: JSON.stringify({
                         stripeTokenId: token.id,
-                        items: obj
+                        items: getObj()
                     })
                 }).
-                then(res => { return res.json(); }).
-                //@desc here we should inform that the transaction has been successful
-                //... and that the user can proceed to pick up their stuff
-                then( data => { console.log(data); }).
+                then( res => { return res.json(); }).
+                then( data => { successSwal(); }).
                 catch( err => { console.log(err); })
             }
         })
@@ -158,8 +134,8 @@
             amount: parseFloat(document.getElementById("totalPrice").textContent) * 100
         });
     }
-    // function initMap() {
-        
+    
+    // function initMap() { 
     //     let breakie = JSON.parse(document.getElementById("breakie").innerText);
     //     let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
     //     var map = new google.maps.Map(

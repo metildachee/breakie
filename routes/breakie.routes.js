@@ -20,17 +20,25 @@ router.get("/new", async (req, res) => {
 
 //@desc using Stripe to charger customers
 router.post("/purchase", async(req, res) => {
-    stripe.charges.create({
-        amount: parseFloat(req.body.items.price) * 100,
-        source: req.body.stripeTokenId,
-        currency: 'sgd'
-    }).then( data => {
-        console.log("charge success");
-        res.json({ message: "successful"});
-    }).catch( err => { 
-        console.log(err);
-        res.status(500).end();
-    });
+    // stripe.charges.create({
+    //     amount: parseFloat(req.body.items.price) * 100,
+    //     source: req.body.stripeTokenId,
+    //     currency: 'sgd'
+    // }).then( data => {
+    //     console.log("charge success");
+    //     res.json({ message: "successful"});
+    // }).catch( err => { 
+    //     console.log(err);
+    //     res.status(500).end();
+    // });
+
+    if (req.body.stripeTokenId) {
+        console.log("card payment");
+    }
+    else {
+        console.log("cash payment");
+    }
+    res.json({ message: "successful"});
 })
 
 // @desc an order has been made

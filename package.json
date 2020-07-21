@@ -30,12 +30,14 @@
     "gridfs-stream": "^1.1.1",
     "method-override": "^3.0.0",
     "mongoose": "^5.9.25",
+    "mongoose-algolia": "^1.10.1",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.2.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pusher": "^3.0.1",
     "stripe": "^8.76.0",
-    "sweetalert2": "^9.17.0"
+    "sweetalert2": "^9.17.0",
+    "swup": "^2.0.11"
   }
 }
