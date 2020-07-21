@@ -2,7 +2,6 @@ const router = require('express').Router();
 const Orders = require('../models/order.model');
 const Breakies = require('../models/breakie.model');
 
-// SHOW ORDERS -->
 // @desc show orders
 router.get("/", async (req, res) => {
     res.locals.atHomePage = false;
