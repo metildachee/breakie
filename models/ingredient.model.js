@@ -6,6 +6,7 @@ const ingredientSchema = Schema({
     type: String
 });
 
+ingredientSchema.index({'$**': 'text'});
 const Ingredient = mongoose.model("Ingredient", ingredientSchema);
 
 module.exports = Ingredient;

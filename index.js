@@ -165,6 +165,10 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
             console.log(`File has been uploaded.`);    
         }
         await Users.findByIdAndUpdate(req.user._id, { $push: { publishes: breakie._id }});
+        Breakies.SyncToAlgolia() //Clears the Algolia index for this schema and synchronizes all documents to Algolia (based on the settings defined in your plugin settings)
+        Breakies.SetAlgoliaSettings({
+        searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'], //Sets the settings for this schema, see [Algolia's Index settings parameters](https://www.algolia.com/doc/api-client/javascript/settings#set-settings) for more info.
+        })
         res.redirect("/");
     }
     catch(err) { console.log(err); }
@@ -210,15 +214,29 @@ app.post('/breakie/update/:id', checkUser, upload.single('file'), async (req, re
     catch( err => console.log(err) );
 })
 
+const client = algoliasearch('73KCNG918X', 'ca6e613de216883f20c2f6a51675b9bb');
+const breakie = client.initIndex('breakie');
 
 //@desc accepting search post request, redirect to a home page with searches
-app.post("/search", (req, res) => {
-    Breakies.find().
-    populate("cuisine ingredients creator").
-    find({ $text: { $search: req.body.search }}).
-    exec( (err, docs) => {
-        res.render("breakie/search", { breakies: docs, search: req.body.search });
+app.post("/search", async (req, res) => {
+    // Breakies.find().
+    // populate("cuisine ingredients creator").
+    // find({ $text: { $search: req.body.search }}).
+    // exec( (err, docs) => {
+    //     console.log(docs);
+    //     // res.render("breakie/search", { breakies: docs, search: req.body.search });
+    // });
+    let hitIds = [];
+    await breakie.search(req.body.search).then(({ hits }) => {
+        for (let i = 0; i < hits.length; i++)
+            hitIds.push(hits[i].id);
     });
+    Breakies.find({ "_id": { $in: hitIds } }).
+    populate("creator ingredients cuisine").
+    then( breakies => {
+        res.render("breakie/search", { breakies, search: req.body.search });
+    }).
+    catch( err => console.log(err) );
 })
 
 app.use("/auth", require("./routes/auth.routes.js"));
