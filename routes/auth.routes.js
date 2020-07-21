@@ -4,9 +4,13 @@ const passport = require('../setup/ptconfig');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 
-router.get("/register", (req, res) => { res.render("user/register"); })
+router.get("/register", (req, res) => { 
+    res.locals.atHomePage = false;
+    res.render("user/register"); 
+})
 
 router.post("/register", async (req, res) => {
+    res.locals.atHomePage = false;
     try {
         let hash = await bcrypt.hash(req.body.password, 10);
         let user = await Users.create(req.body);
@@ -36,6 +40,7 @@ router.post("/register", async (req, res) => {
 })
 
 router.get("/login", (req, res) => {
+    res.locals.atHomePage = false;
     res.render("user/login");
 })
 
@@ -48,6 +53,7 @@ router.post("/login",
 );
 
 router.get("/logout", (req, res) => {
+    res.locals.atHomePage = false;
     req.logout();
     req.flash("success", "You've logged out successfully.");
     res.redirect("/");

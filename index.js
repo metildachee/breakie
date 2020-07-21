@@ -69,6 +69,7 @@ app.use(flash());
 app.use(function(req, res, next){
     res.locals.alerts = req.flash();
     res.locals.currentUser = req.user;
+    res.locals.atHomePage = true;
     next();
 })
 
@@ -95,6 +96,7 @@ app.post("/", (req, res) => {
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
+    res.locals.atHomePage = true;
     if (currentPos == undefined) {
         console.log("current pos is undefined");
         currentPos = { lat: 1.3525, lng: 103.9447 };
@@ -170,6 +172,7 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
 
 // @desc shows individual breakies
 app.get("/breakie/show/:id", (req, res) => {
+    res.locals.atHomePage = false;
     Breakies.findById(req.params.id).
     populate("creator ingredients cuisine").
     then( breakie => {
@@ -198,6 +201,7 @@ app.get('/image/:filename', (req, res) => {
 
 // @desc updates breakie file with form data
 app.post('/breakie/update/:id', checkUser, upload.single('file'), async (req, res) => {
+    res.locals.atHomePage = false;
     Breakies.findByIdAndUpdate(req.params.id, req.body).
     then( async breakie => {
         if (req.file != undefined) await Breakies.findByIdAndUpdate(req.params.id, { image: req.file.filename });

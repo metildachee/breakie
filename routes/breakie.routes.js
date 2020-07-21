@@ -9,6 +9,7 @@ router.use(express.json());
 
 // @desc displays forms
 router.get("/new", async (req, res) => {
+    res.locals.atHomePage = false;
     try {
         let ingredients = await Ingredients.find();
         let cuisines = await Cuisines.find();
@@ -74,6 +75,7 @@ router.delete("/delete/:id", (req, res) => {
 })
 
 router.get("/edit/:id", async (req, res) => {
+    res.locals.atHomePage = false;
     try {
         let ingredients = await Ingredients.find();
         let cuisines = await Cuisines.find();

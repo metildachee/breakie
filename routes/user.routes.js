@@ -4,6 +4,7 @@ const checkUser = require('../setup/checkUser');
 
 // @desc displays the current user's published breakies
 router.get('/list', checkUser, (req, res) => {
+    res.locals.atHomePage = false;
     Users.findById(req.user._id).
     populate({
         path: "publishes",
@@ -16,6 +17,7 @@ router.get('/list', checkUser, (req, res) => {
 })
 
 router.get('/show/:id', (req, res) => {
+    res.locals.atHomePage = false;
     Users.findById(req.params.id).
     populate({
         path: "publishes",

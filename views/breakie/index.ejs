@@ -84,28 +84,28 @@
     const breakie = client.initIndex('breakie');
 
     autocomplete(
-    '#aa-search-input',
-    {
-        debug: true,
-        templates: {
-        dropdownMenu:
-            '<div class="aa-dataset-player"></div>'
-        },
-    },
-    [
+        '#aa-search-input',
         {
-            source: autocomplete.sources.hits(breakie, {hitsPerPage: 7}),
-            displayKey: 'name',
-            name: 'player',
+            debug: true,
             templates: {
-                // header: '<div class="aa-suggestions-category">Breakies</div>',
-                suggestion({_highlightResult}) {
-                return `<span>${_highlightResult.name.value}</span>`;
-                },
-                empty: '<div class="aa-empty">No matching breakies</div>',
+            dropdownMenu:
+                '<div class="aa-dataset-player"></div>'
             },
         },
-    ]
+        [
+            {
+                source: autocomplete.sources.hits(breakie, {hitsPerPage: 7}),
+                displayKey: 'name',
+                name: 'player',
+                templates: {
+                    header: '<div class="aa-suggestions-category">Breakies</div>',
+                    suggestion({_highlightResult}) {
+                    return `<span>${_highlightResult.name.value}</span>`;
+                    },
+                    empty: '<div class="aa-empty">No matching breakies</div>',
+                },
+            },
+        ]
     );
 
 </script>
