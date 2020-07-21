@@ -49,3 +49,7 @@ Core app features:
 2. IonicJS
 3. Entice people to actually use the app
 4. Allow sharing on Instagram stories
+
+## Things that I tried but didn't work
+1. [Pusher](https://pusher.com/)
+2. [Stripe Connect](https://stripe.com/en-sg/connect)

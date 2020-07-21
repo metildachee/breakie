@@ -5,6 +5,7 @@ const Breakies = require('../models/breakie.model');
 // SHOW ORDERS -->
 // @desc show orders
 router.get("/", async (req, res) => {
+    res.locals.atHomePage = false;
     try {
         let toPrepare = await Orders.find({ seller: req.user._id }).
             populate("seller buyer").
@@ -34,6 +35,7 @@ router.post("/done/:id", async (req, res) => {
 
 // @desc buyer wants to cancel the order
 router.get("/cancel/:id", async (req, res) => {
+    res.locals.atHomePage = false;
     try {
         // and we will set cancelled variable to true 
         let order = await Orders.findByIdAndUpdate(req.params.id, { cancelled: true });

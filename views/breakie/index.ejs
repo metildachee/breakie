@@ -1,5 +1,6 @@
 <span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near <span id="currentAddr">you</span></span>
 <!-- <div class="container pr-0 mr-1"> -->
+    <div id="hits"></div>
     <div class="row">
         <div class="col-md-8 grid">
             <p id="breakies" style="display: none"><%= JSON.stringify(breakies) %></p>
@@ -10,9 +11,13 @@
                             <img class="square-img" src="/image/<%= breakie.image %>" alt="">
                         </div>
                         <h6 class="cell-title"><%= breakie.name %></h6>
-                        <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
+                        <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %>
+                        </p>
                         <a class="m-0 purple-text" href="/user/show/<%= breakie.creator._id %>">@<%= breakie.creator.username %></a>
-                        <p class="m-0 purple-text "><%= distance[index] %> away</p>
+                        <p class="m-0 purple-text "><%= distance[index] %> away <span class="badge badge-secondary"><%= breakie.cuisine.type %></span></p>
+                        <% if (breakie.qty <= 0) { %>
+                            <span class="badge badge-warning">Sold out</span>
+                        <% } %> 
                     </div>
                     <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
                     <a class="btn-original" href="/breakie/show/<%= breakie._id %>">See more</a>
@@ -28,6 +33,10 @@
 <!-- <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
 </script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.0.0/dist/algoliasearch-lite.umd.js" integrity="sha256-MfeKq2Aw9VAkaE9Caes2NOxQf6vUa8Av0JqcUXUGkd0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.0.0/dist/instantsearch.production.min.js" integrity="sha256-6S7q0JJs/Kx4kb/fv0oMjS855QTz5Rc2hh9AkIUjUsk=" crossorigin="anonymous"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
 <script>
     let currentPos;
     // @desc on page loads
@@ -69,4 +78,61 @@
     //         icon: iconType
     //     });
     // }
+
+    //@algolia
+    const client = algoliasearch('73KCNG918X', 'ca6e613de216883f20c2f6a51675b9bb');
+    const breakie = client.initIndex('breakie');
+    let currentInList = [];
+    autocomplete(
+        '#aa-search-input',
+        {
+            debug: true,
+            templates: {
+            dropdownMenu:
+                '<div class="aa-dataset-player"></div>'
+            },
+        },
+        [
+            {
+                source: autocomplete.sources.hits(breakie, {hitsPerPage: 7}),
+                displayKey: 'name',
+                name: 'player',
+                templates: {
+                    header: '<div class="aa-suggestions-category">Breakies</div>',
+                    suggestion({_highlightResult}) {
+                    console.log(_highlightResult);
+                    currentInList = [];
+                    currentInList.push(_highlightResult);
+                    return `<span>${_highlightResult.name.value} <span class="grey-text">@${_highlightResult.creator.username.value}</span></span>`;
+                    },
+                    empty: '<div class="aa-empty">No matching breakies</div>',
+                },
+            },
+        ]
+    );
+
+    let hits = [];
+    
+    document.getElementById("aa-search-input").addEventListener('keyup', e => {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            // console.log();
+                breakie.search(e.target.value).then(({ hits }) => {
+                console.log("my hits");
+                hits.forEach( hit => {
+                    console.log(hit);
+                })
+            });
+            // let items = [];
+            // let elements = document.getElementsByClassName("aa-suggestion");
+            // for (let i = 0; i < elements.length; i++) {
+            //     items.push(elements[i].childNodes[0].textContent.split(" @")[0]);
+            // }
+            // console.log({ items });
+            // $.post("/search", { items }).
+            // done( () => console.log("meow sent") ).
+            // fail( () => console.log("sending failed") );
+        }
+    })
+
 </script>
