@@ -210,6 +210,17 @@ app.post('/breakie/update/:id', checkUser, upload.single('file'), async (req, re
     catch( err => console.log(err) );
 })
 
+
+//@desc accepting search post request, redirect to a home page with searches
+app.post("/search", (req, res) => {
+    Breakies.find().
+    populate("cuisine ingredients creator").
+    find({ $text: { $search: req.body.search }}).
+    exec( (err, docs) => {
+        res.render("breakie/search", { breakies: docs, search: req.body.search });
+    });
+})
+
 app.use("/auth", require("./routes/auth.routes.js"));
 app.use("/breakie", checkUser, require("./routes/breakie.routes.js"));
 app.use("/order", checkUser, require("./routes/order.routes.js"));
