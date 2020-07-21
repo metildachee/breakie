@@ -13,6 +13,8 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
+const algoliasearch = require('algoliasearch/lite');
+
 require("dotenv").config();
 let gfs;
 
@@ -120,8 +122,6 @@ app.get("/", async (req, res) => {
                 if (breakie._id.equals(no)) sortedBreakies.push(breakie);
             })
         })
-        console.log(sortedBreakies);
-        console.log(sortedBreakies[0].ingredients);
         // @desc get distance
         // let addrBreakies = sortedBreakies.map( breakies => { 
         //     return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 

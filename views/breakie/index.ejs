@@ -1,5 +1,6 @@
 <span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near <span id="currentAddr">you</span></span>
 <!-- <div class="container pr-0 mr-1"> -->
+    <div id="hits"></div>
     <div class="row">
         <div class="col-md-8 grid">
             <p id="breakies" style="display: none"><%= JSON.stringify(breakies) %></p>
@@ -32,6 +33,10 @@
 <!-- <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
 </script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.0.0/dist/algoliasearch-lite.umd.js" integrity="sha256-MfeKq2Aw9VAkaE9Caes2NOxQf6vUa8Av0JqcUXUGkd0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.0.0/dist/instantsearch.production.min.js" integrity="sha256-6S7q0JJs/Kx4kb/fv0oMjS855QTz5Rc2hh9AkIUjUsk=" crossorigin="anonymous"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
 <script>
     let currentPos;
     // @desc on page loads
@@ -73,4 +78,34 @@
     //         icon: iconType
     //     });
     // }
+
+    //@algolia
+    const client = algoliasearch('73KCNG918X', 'ca6e613de216883f20c2f6a51675b9bb');
+    const breakie = client.initIndex('breakie');
+
+    autocomplete(
+    '#aa-search-input',
+    {
+        debug: true,
+        templates: {
+        dropdownMenu:
+            '<div class="aa-dataset-player"></div>'
+        },
+    },
+    [
+        {
+            source: autocomplete.sources.hits(breakie, {hitsPerPage: 7}),
+            displayKey: 'name',
+            name: 'player',
+            templates: {
+                // header: '<div class="aa-suggestions-category">Breakies</div>',
+                suggestion({_highlightResult}) {
+                return `<span>${_highlightResult.name.value}</span>`;
+                },
+                empty: '<div class="aa-empty">No matching breakies</div>',
+            },
+        },
+    ]
+    );
+
 </script>
