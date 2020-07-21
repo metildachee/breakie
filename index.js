@@ -13,7 +13,7 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
-const algoliasearch = require('algoliasearch/lite');
+const algoliasearch = require('algoliasearch');
 
 require("dotenv").config();
 let gfs;
@@ -125,12 +125,14 @@ app.get("/", async (req, res) => {
             })
         })
         // @desc get distance
+        // @google_api
         // let addrBreakies = sortedBreakies.map( breakies => { 
         //     return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
         // }).join("");
         // addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         
         let distanceArray = [];
+        // @google_api
         // axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
         //     params: {
         //         origins:currentPos.lat+","+currentPos.lng,
@@ -144,8 +146,8 @@ app.get("/", async (req, res) => {
         //         row.elements.forEach( value => { distanceArray.push(value.duration.text); })
         //     })
             res.render("breakie/index", { distance: distanceArray, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
-        // } ).
-        // catch(err => console.log(err) );
+    //     } ).
+    //     catch(err => console.log(err) );
     }
     catch(err) { console.log(err); }
 })
@@ -155,20 +157,12 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
     try {
         let breakie = await Breakies.create(req.body);
         
-        if (req.file == undefined) {
-            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
-            console.log(`No file has been specified`);
-        } else {
-            console.log(breakie); 
-            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
-
-            console.log(`File has been uploaded.`);    
-        }
+        if (req.file == undefined) breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
+        else breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
         await Users.findByIdAndUpdate(req.user._id, { $push: { publishes: breakie._id }});
-        Breakies.SyncToAlgolia() //Clears the Algolia index for this schema and synchronizes all documents to Algolia (based on the settings defined in your plugin settings)
-        Breakies.SetAlgoliaSettings({
-        searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'], //Sets the settings for this schema, see [Algolia's Index settings parameters](https://www.algolia.com/doc/api-client/javascript/settings#set-settings) for more info.
-        })
+
+        Breakies.SyncToAlgolia();
+        Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
         res.redirect("/");
     }
     catch(err) { console.log(err); }
@@ -181,7 +175,7 @@ app.get("/breakie/show/:id", (req, res) => {
     populate("creator ingredients cuisine").
     then( breakie => {
         gfs.files.findOne({ _id: breakie.image }, (err, file) => {
-            res.render("breakie/show", { breakie, file, key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
+            res.render("breakie/show", { breakie, file, user: JSON.stringify(res.locals.currentUser), key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
         })
     }).
     catch(err => console.log(err) )
@@ -219,13 +213,6 @@ const breakie = client.initIndex('breakie');
 
 //@desc accepting search post request, redirect to a home page with searches
 app.post("/search", async (req, res) => {
-    // Breakies.find().
-    // populate("cuisine ingredients creator").
-    // find({ $text: { $search: req.body.search }}).
-    // exec( (err, docs) => {
-    //     console.log(docs);
-    //     // res.render("breakie/search", { breakies: docs, search: req.body.search });
-    // });
     let hitIds = [];
     await breakie.search(req.body.search).then(({ hits }) => {
         for (let i = 0; i < hits.length; i++)

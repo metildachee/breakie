@@ -75,10 +75,10 @@
             <% if (toPrepare.length == 0) { %>
                 <h5 class="center-text orange-text" >You have no orders to prepare. Start cooking!</h5>
             <% } %>  
-            <div class="row mt-2 grey-border">
+            <div class="row mt-2">
                 <div class="col center-text">
                     <% toPrepare.forEach( prepare => { %>
-                        <div class="row">
+                        <div class="row grey-border">
                             <div class="col-6 justify-content-center" id="toPrepare">
                                 <div class="justify-center">
                                     <% if (prepare.buyerContact) { %>

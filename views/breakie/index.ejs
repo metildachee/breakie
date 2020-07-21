@@ -33,8 +33,6 @@
 <!-- <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
 </script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.0.0/dist/algoliasearch-lite.umd.js" integrity="sha256-MfeKq2Aw9VAkaE9Caes2NOxQf6vUa8Av0JqcUXUGkd0=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.0.0/dist/instantsearch.production.min.js" integrity="sha256-6S7q0JJs/Kx4kb/fv0oMjS855QTz5Rc2hh9AkIUjUsk=" crossorigin="anonymous"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
 <script>
@@ -52,7 +50,7 @@
         else { console.log("an error occured");}
     })();
 
-    // let breakies = JSON.parse(document.getElementById("breakies").innerText);
+    let breakies = JSON.parse(document.getElementById("breakies").innerText);
     // function initMap() {
     //   var map = new google.maps.Map(
     //     document.getElementById('map'), {zoom: 14, center: currentPos });
@@ -79,7 +77,7 @@
     //     });
     // }
 
-    //@algolia
+    //@desc algolia
     const client = algoliasearch('73KCNG918X', 'ca6e613de216883f20c2f6a51675b9bb');
     const breakie = client.initIndex('breakie');
     let currentInList = [];
@@ -110,29 +108,4 @@
             },
         ]
     );
-
-    let hits = [];
-    
-    document.getElementById("aa-search-input").addEventListener('keyup', e => {
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-        if(keycode == '13'){
-            // console.log();
-                breakie.search(e.target.value).then(({ hits }) => {
-                console.log("my hits");
-                hits.forEach( hit => {
-                    console.log(hit);
-                })
-            });
-            // let items = [];
-            // let elements = document.getElementsByClassName("aa-suggestion");
-            // for (let i = 0; i < elements.length; i++) {
-            //     items.push(elements[i].childNodes[0].textContent.split(" @")[0]);
-            // }
-            // console.log({ items });
-            // $.post("/search", { items }).
-            // done( () => console.log("meow sent") ).
-            // fail( () => console.log("sending failed") );
-        }
-    })
-
 </script>

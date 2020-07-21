@@ -16,7 +16,6 @@ const orderSchema = Schema({
     },
     price: Number,
     buyer: {type: Schema.Types.ObjectId, ref: "User"},
-    buyerContact: String,
     seller: {type: Schema.Types.ObjectId, ref: "User"},
     items: [{
                 breakie: {type: Schema.Types.ObjectId, ref: "Breakie"},
