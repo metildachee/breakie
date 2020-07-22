@@ -15,6 +15,7 @@ const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
 const algoliasearch = require('algoliasearch');
 const Ingredient = require('./models/ingredient.model');
+const Cuisine = require('./models/cuisine.model');
 
 require("dotenv").config();
 let gfs;
@@ -96,7 +97,7 @@ app.get("/ingredients/add", (req, res) => {
 app.post("/ingredients/add", async (req, res) => {
     console.log(req.body);
     try {
-        let ingredient = await Ingredient.create(req.body);
+        let ingredient = await Cuisine.create(req.body);
         res.redirect("/ingredients/add");
         console.log(ingredient);
     }
