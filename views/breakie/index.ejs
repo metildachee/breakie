@@ -65,7 +65,7 @@
     // @un-comment
     function initMap() {
         if (currentPos == undefined) currentPos = { lat: 1.3521, lng: 103.8198 };
-        map = new google.maps.Map(document.getElementById("map"), { center: currentPos, zoom: 14 });
+        map = new google.maps.Map(document.getElementById("map"), { center: currentPos, zoom: 10 });
         let marker = new google.maps.Marker({ position: currentPos, map: map });
 
         let index = 0;
