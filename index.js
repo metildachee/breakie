@@ -31,7 +31,7 @@ mongoose.connect(process.env.PROD_DATABASE, {
 });
 
 const storage = new MulterGridfsStorage({
-    url: process.env.DATABASE,
+    url: process.env.PROD_DATABASE,
     file: (req, file) => {
       return new Promise((resolve, reject) => {
           const filename = file.originalname;

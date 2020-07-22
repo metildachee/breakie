@@ -4,7 +4,7 @@
   "description": "An application to share your breakfast with your neighbours.",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -37,7 +37,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pusher": "^3.0.1",
-    "stripe": "^8.76.0",
+    "stripe": "^8.77.0",
     "sweetalert2": "^9.17.0",
     "swup": "^2.0.11"
   }
