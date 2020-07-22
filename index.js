@@ -97,6 +97,7 @@ app.post("/", (req, res) => {
 // @desc displays homepage
 app.get("/", async (req, res) => {
     res.locals.atHomePage = true;
+    // @bug need to fix this part where lat and long should actually come from the server
     if (currentPos == undefined) {
         console.log("current pos is undefined");
         currentPos = { lat: 1.3525, lng: 103.9447 };
