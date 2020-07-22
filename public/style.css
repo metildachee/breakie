@@ -234,6 +234,7 @@ input[type="file"] { display: none; }
 .popup-bubble:hover {
     background-color: #ff8e3c;
     color: white;
+    z-index: 1;
 }
 
   /* The parent of the bubble. A zero-height div at the top of the tip. */

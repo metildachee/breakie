@@ -18,7 +18,7 @@ const algoliasearch = require('algoliasearch');
 require("dotenv").config();
 let gfs;
 
-mongoose.connect(process.env.DATABASE, {
+mongoose.connect(process.env.PROD_DATABASE, {
     useNewUrlParser : true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -88,14 +88,13 @@ app.use(function(req, res, next){
 var currentPos;
 //@desc gets current position of user
 app.post("/", (req, res) => {
-    console.log("here", req.body);
     currentPos = { lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng) };
     console.log("thats all for now");
-    res.redirect("/");
 })
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
+    req.flash("success", "Refresh your page to see breakies close to you.");
     res.locals.atHomePage = true;
     // @bug need to fix this part where lat and long should actually come from the server
     if (currentPos == undefined) {
@@ -106,15 +105,16 @@ app.get("/", async (req, res) => {
     }
     try {
         let sortedUsers = await Users.
-        aggregate([ { 
-            $geoNear: { 
-                near: 
-                { type: "Point", coordinates: [currentPos.lng, currentPos.lat] },
-                key: "location",
-                distanceField: "distanceField"
-            }
-        }]);
+            aggregate([{ 
+                $geoNear: { 
+                    near: 
+                    { type: "Point", coordinates: [currentPos.lng, currentPos.lat] },
+                    key: "location",
+                    distanceField: "distanceField"
+                }
+            }])
         let creators = sortedUsers.filter( user => user.publishes.length > 0 );
+        let sellers = await Users.find({ _id: { $in: creators }}).populate("publishes");
         let breakies = creators.map( creator => { return creator.publishes; });
         breakies = breakies.flat();
         let order = breakies;
@@ -146,9 +146,9 @@ app.get("/", async (req, res) => {
         //     data.data.rows.forEach( row => {
         //         row.elements.forEach( value => { distanceArray.push(value.duration.text); })
         //     })
-            res.render("breakie/index", { distance: distanceArray, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
-    //     } ).
-    //     catch(err => console.log(err) );
+            res.render("breakie/index", { distance: distanceArray, sellers: JSON.stringify(sellers), breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+        // } ).
+        // catch(err => console.log(err) );
     }
     catch(err) { console.log(err); }
 })
