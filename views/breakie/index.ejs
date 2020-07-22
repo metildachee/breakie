@@ -92,7 +92,8 @@
 
             let contentString = `<div class="orange-text medium-text">`;
             seller.publishes.forEach( published => {
-                contentString += `<p class="mb-0">${published.name} (${published.qty}) @$${published.price}.00</p>`
+                if (!published.deleted) 
+                    contentString += `<p class="mb-0">${published.name} (${published.qty}) @$${published.price}.00</p>`
             })
             contentString += `</div>`;
             let infowindow = new google.maps.InfoWindow({ content: contentString });
@@ -123,7 +124,10 @@
         },
         [
             {
-                source: autocomplete.sources.hits(breakie, {hitsPerPage: 7}),
+                source: autocomplete.sources.hits(breakie, {
+                    hitsPerPage: 7,
+                    filters: "deleted=0"
+                }),                
                 displayKey: 'name',
                 name: 'player',
                 templates: {

@@ -26,7 +26,7 @@
                                     <p class="purple-text pb-0 mb-0">@<%= collect.seller.username %></p>
                                     <% let itemsComplete = true %>
                                     <% collect.items.forEach( item => { %>
-                                        <% if (item.deleted && !collect.completed) { %>
+                                        <% if (item.breakie.deleted && !collect.completed && !collect.cancelled) { %>
                                             <% itemsComplete = false %>
                                             <p class="orange-text">This item has been removed by the seller. Please chat to find out more.</p>
                                         <% } else { %>
@@ -45,7 +45,7 @@
                                 <% } %>
 
                                 <% if (!itemsComplete) { %>
-                                    <span class="badge badge-pill badge-danger">Removed</span>
+                                    <span class="badge badge-pill badge-danger">Unlisted</span>
                                 <% } else if (collect.completed) { %> 
                                     <span class="badge badge-pill badge-secondary">Completed</span>
                                 <% } else if (collect.cancelled) { %> 
@@ -88,7 +88,7 @@
                                     <% let preparedItemsCollected = true %> 
                                     <% prepare.items.forEach( item => { %>
                                         <!-- order is incomplete but item removed by seller -->
-                                        <% if (item.breakie.deleted && !prepare.completed) { %>
+                                        <% if (item.breakie.deleted && !prepare.completed && !prepare.cancelled) { %>
                                             <p class="orange-text">This food item has been removed by you.</p>
                                             <% preparedItemsCollected = false; %> 
                                         <% } else { %>
@@ -107,7 +107,7 @@
                                 <% } %>
 
                                 <% if (!preparedItemsCollected) { %>
-                                    <span class="badge badge-pill badge-danger">Item removed</span>
+                                    <span class="badge badge-pill badge-danger">Unlisted</span>
                                 <% } else if (prepare.completed) { %> 
                                     <span class="badge badge-pill badge-secondary">Completed</span>
                                 <% } else if (prepare.cancelled) { %>

@@ -245,7 +245,8 @@ app.post("/search", async (req, res) => {
         for (let i = 0; i < hits.length; i++)
             hitIds.push(hits[i].id);
     });
-    Breakies.find({ "_id": { $in: hitIds } }).
+
+    Breakies.find({ "_id": { $in: hitIds }, deleted: false }).
     populate("creator ingredients cuisine").
     then( breakies => {
         res.render("breakie/search", { breakies, search: req.body.search });

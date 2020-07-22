@@ -93,7 +93,7 @@
             text: `${document.getElementById('creator').textContent} is waiting for you!`,
             confirmButtonText: "Got it",
             confirmButtonColor: beautifulOrange
-        });
+        }).then( () => window.reload() )
     }
 
     // @desc paying by cash
