@@ -115,6 +115,7 @@ app.post("/", (req, res) => {
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
+    console.log("meow");
     res.locals.atHomePage = true;
     // @bug need to fix this part where lat and long should actually come from the server
     if (currentPos == undefined) {
@@ -151,7 +152,7 @@ app.get("/", async (req, res) => {
             return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
-        
+        console.log(addrBreakies);
         let distanceArray = [];
         
         // @google_api
@@ -167,6 +168,7 @@ app.get("/", async (req, res) => {
             data.data.rows.forEach( row => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
+            console.log(distanceArray);
             res.render("breakie/index", { distance: distanceArray, sellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
         } ).
         catch(err => console.log(err) );

@@ -58,6 +58,7 @@
     let sellers = JSON.parse(document.getElementById("sellers").innerText);
 
     let distance = "<%= distance %>";
+    distance = distance.split(",");
     let hoverArray = <%- JSON.stringify(hoverArray) %>;
     hoverArray = JSON.parse(hoverArray);
 
@@ -69,7 +70,7 @@
 
         let index = 0;
         for (const seller of sellers) {
-            let distanceAway = (distance == undefined) ? seller.username : `${distance[index]} min`;
+            let distanceAway = (distance == undefined) ? seller.username : `${distance[index]}`;
             let sellerCoords = {lat: parseFloat(seller.location.coordinates[1]), lng: parseFloat(seller.location.coordinates[0])};
 
             let marker = new google.maps.Marker({
