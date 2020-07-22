@@ -65,7 +65,8 @@
         Swal.fire({
             title: "How would you like to pay?",
             confirmButtonText: "Cash",
-            showCancelButton: sellerHasBankAcc ? true : false, // @change this to false to show Stripe activity
+            // showCancelButton: sellerHasBankAcc ? true : false, // @change this to false to show Stripe activity
+            showCancelButton: true,
             cancelButtonText: "Card",
             confirmButtonColor: beautifulOrange
         }).

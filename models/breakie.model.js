@@ -37,14 +37,11 @@ breakieSchema.plugin(mongooseAlgolia, {
 })
 
 
-//@desc algolia searching
+// @desc algolia searching
 const Breakie = mongoose.model("Breakie", breakieSchema);
-Breakie.SyncToAlgolia() //Clears the Algolia index for this schema and synchronizes all documents to Algolia (based on the settings defined in your plugin settings)
+Breakie.SyncToAlgolia();
 Breakie.SetAlgoliaSettings({
-  searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'], //Sets the settings for this schema, see [Algolia's Index settings parameters](https://www.algolia.com/doc/api-client/javascript/settings#set-settings) for more info.
+  searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'], 
 })
-
-//@desc for searching 
-breakieSchema.index({'$**': 'text'});
 
 module.exports = Breakie;

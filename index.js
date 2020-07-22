@@ -166,7 +166,7 @@ app.get("/", async (req, res) => {
             data.data.rows.forEach( row => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
-            res.render("breakie/index", { distance: distanceArray, sellers: JSON.stringify(sellers), breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+            res.render("breakie/index", { distance: distanceArray, sellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
         } ).
         catch(err => console.log(err) );
     }

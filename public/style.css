@@ -202,12 +202,12 @@ input[type="file"] { display: none; }
 .mapContainer { 
     position: fixed;
     right: 0px;
-    top: 30px;
+    top: 40px;
 }
 
 #indi-breakie-map {
     width: 100%;
-    height: 30vh;
+    height: 50vh;
     background-color: red;
 }
 
