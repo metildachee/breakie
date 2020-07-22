@@ -88,9 +88,9 @@ app.use(function(req, res, next){
     next();
 })
 
-// app.get("/ingredients/add", (req, res) => {
-//     res.render("ingredient/index");
-// })
+app.get("/ingredients/add", (req, res) => {
+    res.render("ingredient/index");
+})
 
 app.post("/ingredients/add", async (req, res) => {
     console.log(req.body);
