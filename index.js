@@ -19,16 +19,29 @@ require("dotenv").config();
 let gfs;
 
 // mongoose.Promise = Promise;
+// mongoose.connect(process.env.PROD_DATABASE, {
+//     useNewUrlParser : true,
+//     useUnifiedTopology: true,
+//     useFindAndModify: false,
+//     useCreateIndex: true,
+// }, (err, db) => { 
+//     gfs = Grid(db.db, mongoose.mongo);
+//     gfs.collection('uploads');
+//     console.log("Mongodb connected!"); 
+// });
+mongoose.Promise = Promise;
 mongoose.connect(process.env.PROD_DATABASE, {
     useNewUrlParser : true,
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true,
-}, (err, db) => { 
-    gfs = Grid(db.db, mongoose.mongo);
+}).
+then( db => { 
+    gfs = Grid(db, mongoose.mongo);
     gfs.collection('uploads');
     console.log("Mongodb connected!"); 
-});
+}).
+catch( err => console.log(err) )
 
 const storage = new MulterGridfsStorage({
     url: process.env.PROD_DATABASE,
