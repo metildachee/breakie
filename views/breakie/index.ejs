@@ -66,44 +66,7 @@
 
     // @un-comment
     function initMap() {
-        if (currentPos == undefined) currentPos = { lat: 1.3521, lng: 103.8198 };
-        map = new google.maps.Map(document.getElementById("map"), { center: currentPos, zoom: 14 });
-        let marker = new google.maps.Marker({ position: currentPos, map: map });
-
-        let index = 0;
-        for (const seller of sellers) {
-            let distanceAway = (distance == undefined) ? seller.username : `${distance[index]} min`;
-            let sellerCoords = {lat: parseFloat(seller.location.coordinates[1]), lng: parseFloat(seller.location.coordinates[0])};
-
-            let marker = new google.maps.Marker({
-                icon: 'img/icon.svg', 
-                label: { text: distanceAway, color: "orange", fontWeight: "bold" },
-                position: sellerCoords, map: map
-            });
-
-            marker.addListener('mouseover', e => { 
-                hoverArray[seller.username].forEach( item => {
-                    document.getElementById(`index-${item}`).classList.add("hover-color");
-                })
-            });
-            marker.addListener('mouseout', e => { 
-                hoverArray[seller.username].forEach( item => {
-                    document.getElementById(`index-${item}`).classList.remove("hover-color");
-                })
-            });
-
-            let contentString = `<div class="orange-text medium-text">`;
-            seller.publishes.forEach( published => {
-                if (!published.deleted) 
-                    contentString += `<p class="mb-0">${published.name} (${published.qty}) @$${published.price}.00</p>`
-            })
-            contentString += `</div>`;
-            let infowindow = new google.maps.InfoWindow({ content: contentString });
-            marker.addListener('click', () => { infowindow.open(map, marker) });   
-            index++;             
-        }
-        index = 0;
-        if (currentPos != { lat: 1.3521, lng: 103.8198 }) updateNeighbour();
+        alert("meow");
     }
 
     function updateNeighbour() {
