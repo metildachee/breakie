@@ -68,19 +68,25 @@ defer
         var popup, Popup;
 
         function initMap() {
-          exports.map = new google.maps.Map(document.getElementById("map"), {
-            center: currentPos,
-            zoom: 16
-          });
+            if (currentPos == undefined) {
+                currentPos = {
+                    lat: 1.3521,
+                    lng: 103.8198
+                }
+            }
+            exports.map = new google.maps.Map(document.getElementById("map"), {
+                center: currentPos,
+                zoom: 16
+            });
 
-          breakies.forEach( breakie => {
-            let newDiv = document.createElement("div");
-            newDiv.textContent = breakie.name;
-            let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
-            Popup = createPopupClass();
-            popup = new Popup( new google.maps.LatLng(sellerCoords.lat, sellerCoords.lng), newDiv );
-            popup.setMap(exports.map);         
-          })
+            breakies.forEach( breakie => {
+                let newDiv = document.createElement("div");
+                newDiv.textContent = breakie.name;
+                let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
+                Popup = createPopupClass();
+                popup = new Popup( new google.maps.LatLng(sellerCoords.lat, sellerCoords.lng), newDiv );
+                popup.setMap(exports.map);         
+            })
 
             // @desc getting neighbourhood
             let geocoder = new google.maps.Geocoder();
@@ -93,43 +99,43 @@ defer
         }
 
         function createPopupClass() {
-          function Popup(position, content) {
-            this.position = position;
-            content.classList.add("popup-bubble"); // This zero-height div is positioned at the bottom of the bubble.
+            function Popup(position, content) {
+                this.position = position;
+                content.classList.add("popup-bubble"); // This zero-height div is positioned at the bottom of the bubble.
 
-            var bubbleAnchor = document.createElement("div");
-            bubbleAnchor.classList.add("popup-bubble-anchor");
-            bubbleAnchor.appendChild(content); // This zero-height div is positioned at the bottom of the tip.
+                var bubbleAnchor = document.createElement("div");
+                bubbleAnchor.classList.add("popup-bubble-anchor");
+                bubbleAnchor.appendChild(content); // This zero-height div is positioned at the bottom of the tip.
 
-            this.containerDiv = document.createElement("div");
-            this.containerDiv.classList.add("popup-container");
-            this.containerDiv.appendChild(bubbleAnchor); // Optionally stop clicks, etc., from bubbling up to the map.
+                this.containerDiv = document.createElement("div");
+                this.containerDiv.classList.add("popup-container");
+                this.containerDiv.appendChild(bubbleAnchor); // Optionally stop clicks, etc., from bubbling up to the map.
 
-            google.maps.OverlayView.preventMapHitsAndGesturesFrom(this.containerDiv);
-          }
-
-          Popup.prototype = Object.create(google.maps.OverlayView.prototype);
-          Popup.prototype.onAdd = function() { this.getPanes().floatPane.appendChild(this.containerDiv); };
-          Popup.prototype.onRemove = function() {
-            if (this.containerDiv.parentElement) this.containerDiv.parentElement.removeChild(this.containerDiv);
-          };
-
-          Popup.prototype.draw = function() {
-            var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
-
-            var display =
-              Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
-                ? "block"
-                : "none";
-
-            if (display === "block") {
-              this.containerDiv.style.left = divPosition.x + "px";
-              this.containerDiv.style.top = divPosition.y + "px";
+                google.maps.OverlayView.preventMapHitsAndGesturesFrom(this.containerDiv);
             }
 
-            if (this.containerDiv.style.display !== display) this.containerDiv.style.display = display;
-          };
-          return Popup;
+            Popup.prototype = Object.create(google.maps.OverlayView.prototype);
+            Popup.prototype.onAdd = function() { this.getPanes().floatPane.appendChild(this.containerDiv); };
+            Popup.prototype.onRemove = function() {
+                if (this.containerDiv.parentElement) this.containerDiv.parentElement.removeChild(this.containerDiv);
+            };
+
+            Popup.prototype.draw = function() {
+                var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
+
+                var display =
+                Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
+                    ? "block"
+                    : "none";
+
+                if (display === "block") {
+                this.containerDiv.style.left = divPosition.x + "px";
+                this.containerDiv.style.top = divPosition.y + "px";
+                }
+
+                if (this.containerDiv.style.display !== display) this.containerDiv.style.display = display;
+            };
+            return Popup;
         }
 
         exports.createPopupClass = createPopupClass;
