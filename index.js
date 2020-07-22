@@ -94,7 +94,6 @@ app.post("/", (req, res) => {
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
-    req.flash("success", "Refresh your page to see breakies close to you.");
     res.locals.atHomePage = true;
     // @bug need to fix this part where lat and long should actually come from the server
     if (currentPos == undefined) {
