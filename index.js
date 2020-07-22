@@ -18,6 +18,7 @@ const algoliasearch = require('algoliasearch');
 require("dotenv").config();
 let gfs;
 
+// mongoose.Promise = Promise;
 mongoose.connect(process.env.PROD_DATABASE, {
     useNewUrlParser : true,
     useUnifiedTopology: true,
