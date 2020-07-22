@@ -53,7 +53,8 @@
                 templates: {
                     header: '<div class="aa-suggestions-category">Breakies</div>',
                     suggestion({_highlightResult}) {
-                        return `<span>${_highlightResult.name.value} <span class="grey-text">@${_highlightResult.creator.username.value}</span></span>`;
+                        let username = (_highlightResult.creator.username.value == undefined) ? "really_popular" : _highlightResult.creator.username.value;
+                        return `<span>${_highlightResult.name.value} <span class="grey-text">@${username}</span></span>`;
                     },
                     empty: '<div class="aa-empty">No matching breakies</div>',
                 },

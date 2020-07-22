@@ -43,9 +43,13 @@ breakieSchema.plugin(mongooseAlgolia, {
 
 // @desc algolia searching
 const Breakie = mongoose.model("Breakie", breakieSchema);
-Breakie.SyncToAlgolia();
-Breakie.SetAlgoliaSettings({
-  searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'], 
+
+breakieSchema.pre('save', async next => {
+    await Breakie.SyncToAlgolia();
+    await Breakie.SetAlgoliaSettings({
+      searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'], 
+    })
+    next();
 })
 
 module.exports = Breakie;

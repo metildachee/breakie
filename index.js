@@ -230,6 +230,8 @@ app.post('/breakie/update/:id', checkUser, upload.single('file'), async (req, re
     Breakies.findByIdAndUpdate(req.params.id, req.body).
     then( async breakie => {
         if (req.file != undefined) await Breakies.findByIdAndUpdate(req.params.id, { image: req.file.filename });
+        await Breakies.SyncToAlgolia();
+        await Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
         res.redirect(`/breakie/show/${breakie._id}`);
     }).
     catch( err => console.log(err) );
