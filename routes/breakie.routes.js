@@ -38,10 +38,9 @@ async function makeOrder(hasPaid, body, userId) {
     catch(err) { console.log(err); }
 }
 
-//@desc using Stripe to charger customers
+// @desc using Stripe to charger customers
 router.post("/purchase/", async(req, res) => {
     console.log(req.body.items);
-    let hasPaid = false;
     if (req.body.stripeTokenId) {
         stripe.charges.create({
             amount: parseFloat(req.body.items.price) * 100,
@@ -76,20 +75,26 @@ router.post("/purchase/:id", async (req, res) => {
     }
     catch(err) { console.log(err); }
 })
+// according to the breakie, pull out from Orders 
 
 // @delete breakie by seller
-router.delete("/delete/:id", (req, res) => {
-    Breakies.findByIdAndDelete(req.params.id).
-    then( async breakie => {
-        Orders.aggregate([{ $match: { items: breakie._id}}]).
-        then( order => { $pull: { items: breakie._id }}).
-        catch( err => console.log(err) );
+router.delete("/delete/:id", async (req, res) => {
+    try {
+        await Breakies.findByIdAndUpdate(req.params.id, { deleted: true });
+
+        // await Orders.aggregate([{ $match: { $and: [{ items: breakie._id} , { completed: false }]}}]).
+        // then( order => { $pull: { items: breakie._id }}).
+        // catch( err => console.log(err) );
+
+        // await Orders.aggregate([{ $match: { $and: [{ items: breakie._id} , { completed: false }]}}]).
+        // then( order => { $pull: { items: breakie._id }}).
+        // catch( err => console.log(err) );
 
         await Breakies.SyncToAlgolia();
         await Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
         res.redirect("/user/list");
-    }).
-    catch(err => console.log(err) );
+    }
+    catch(err) { console.log(err); }
 })
 
 router.get("/edit/:id", async (req, res) => {

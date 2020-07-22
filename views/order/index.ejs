@@ -26,7 +26,7 @@
                                     <p class="purple-text pb-0 mb-0">@<%= collect.seller.username %></p>
                                     <% let itemsComplete = true %>
                                     <% collect.items.forEach( item => { %>
-                                        <% if (item.breakie == null) { %>
+                                        <% if (item.deleted && !collect.completed) { %>
                                             <% itemsComplete = false %>
                                             <p class="orange-text">This item has been removed by the seller. Please chat to find out more.</p>
                                         <% } else { %>
@@ -87,8 +87,9 @@
                 
                                     <% let preparedItemsCollected = true %> 
                                     <% prepare.items.forEach( item => { %>
-                                        <% if (item.breakie == null) { %>
-                                            <p class="orange-text">This order has been removed by you.</p>
+                                        <!-- order is incomplete but item removed by seller -->
+                                        <% if (item.breakie.deleted && !prepare.completed) { %>
+                                            <p class="orange-text">This food item has been removed by you.</p>
                                             <% preparedItemsCollected = false; %> 
                                         <% } else { %>
                                             <p class="orange-text">+ <%= item.breakie.name %> x <%= item.qty %></p>

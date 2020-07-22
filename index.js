@@ -119,7 +119,7 @@ app.get("/", async (req, res) => {
     // @bug need to fix this part where lat and long should actually come from the server
     if (currentPos == undefined) {
         console.log("current pos is undefined");
-        currentPos = { lat: 1.3525, lng: 103.9447 };
+        currentPos = { lat: 1.3521, lng: 103.8198 };
     } else {
         console.log(currentPos + " is updated");
     }
@@ -138,7 +138,7 @@ app.get("/", async (req, res) => {
         let breakies = creators.map( creator => { return creator.publishes; });
         breakies = breakies.flat();
         let order = breakies;
-        breakies = await Breakies.find({ _id: { $in: breakies }}).populate("creator ingredients cuisine");
+        breakies = await Breakies.find({ _id: { $in: breakies }, deleted: false }).populate("creator ingredients cuisine");
         let sortedBreakies = [];
         order.forEach( no => {
             breakies.forEach( breakie => {

@@ -1,7 +1,7 @@
 <span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near 
     <span id="currentAddr">you 
         <span class="badge badge-warning">
-            Updated
+            Refresh to see new breakies
         </span>
     </span>
 </span>
@@ -11,9 +11,6 @@
             <p id="sellers" style="display: none"><%= JSON.stringify(sellers) %></p>
             <% let hoverArray = {}; %> 
             <% breakies.forEach( (breakie, index) => { %>
-                <% if (breakie.qty <= 0) { %>
-                    <% return; %> 
-                <% } %> 
                 <div class="cell m-1 line-height-60" id="index-<%= index %>">
                     <div class="height-80">
                         <div class="mx-auto">
@@ -25,6 +22,9 @@
                         <span class="badge badge-info"><%= distance[index] %> away</span> 
                         <span class="badge badge-secondary"><%= breakie.cuisine.type %></span>
                         <span class="badge badge-secondary"><%= breakie.qty %> portion(s)</span>
+                        <% if (breakie.qty <= 0) { %>
+                            <span class="badge badge-danger">Sold out</span>
+                        <% } %> 
                     </div>
                     <p class="mt-3 cell-price">$<%= breakie.price %>.00</p>
                     <a class="btn-original" href="/breakie/show/<%= breakie._id %>">See more</a>
