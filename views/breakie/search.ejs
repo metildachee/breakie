@@ -1,0 +1,63 @@
+<span class="orange-text"><span class="bold"><%= breakies.length %></span> with <span id="currentAddr"><%= search %></span></span>
+<div class="w-100"></div>
+<div class="row">
+    <div class="col grid-4">
+        <p id="breakies" style="display: none"><%= JSON.stringify(breakies) %></p>
+        <% breakies.forEach( (breakie, index) => { %>
+            <div class="cell m-1 line-height-60">
+                <div class="height-80">
+                    <div class="mx-auto">
+                        <img class="square-img" src="/image/<%= breakie.image %>" alt="">
+                    </div>
+                    <h6 class="cell-title mb-0"><%= breakie.name %></h6>
+                    <p class="m-0 purple-text "><i class="fas fa-map-marker-alt"></i> <%= breakie.creator.address %></p>
+                    <a class="m-0 purple-text" href="/user/show/<%= breakie.creator._id %>">@<%= breakie.creator.username %></a>
+                    <p class="mb-0">
+                        <span class="badge badge-secondary"><%= breakie.cuisine.type %></span>
+                        <span class="badge badge-secondary"><%= breakie.qty %> portion(s)</span>
+                        <% if (breakie.qty <= 0) { %>
+                            <span class="badge badge-warning mt-0">Sold out</span>
+                        <% } %> 
+                    </p>
+
+                </div>
+                <p class="m-0 cell-price">$<%= breakie.price %>.00</p>
+                <a class="btn-original" href="/breakie/show/<%= breakie._id %>">See more</a>
+            </div>
+        <% }) %>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+<script>
+    //@algolia
+    const client = algoliasearch('73KCNG918X', 'ca6e613de216883f20c2f6a51675b9bb');
+    const breakie = client.initIndex('breakie');
+    autocomplete(
+        '#aa-search-input',
+        {
+            debug: true,
+            templates: {
+            dropdownMenu:
+                '<div class="aa-dataset-player"></div>'
+            },
+        },
+        [
+            {
+                source: autocomplete.sources.hits(breakie, {
+                    hitsPerPage: 7,
+                    filters: "deleted=0"
+                }),
+                displayKey: 'name',
+                name: 'player',
+                templates: {
+                    header: '<div class="aa-suggestions-category">Breakies</div>',
+                    suggestion({_highlightResult}) {
+                        return `<span>${_highlightResult.name.value} <span class="grey-text">@${_highlightResult.creator.username.value}</span></span>`;
+                    },
+                    empty: '<div class="aa-empty">No matching breakies</div>',
+                },
+            },
+        ]
+    );
+</script>
