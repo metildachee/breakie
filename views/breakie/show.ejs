@@ -49,7 +49,7 @@
     let qty = document.getElementById("qty");
     let totalPrice = document.getElementById("totalPrice");
     let beautifulOrange = "#ff8e3c";
-    //@desc updates the price
+    // @desc updates the price
     qty.addEventListener('change', updateTotalPrice => {
         totalPrice.textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        
     });
@@ -58,6 +58,7 @@
 
     // @desc event when purchase button is called
     function purchase() {
+        if ('<%- user %>' == "") return;
         let user = <%- JSON.stringify(user) %>;
         user = JSON.parse(user);
         if (user.bankAcc && sellerHasBankAcc) { return placeOrder; } // place order directly

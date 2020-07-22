@@ -90,19 +90,20 @@ app.use(function(req, res, next){
     next();
 })
 
-app.get("/ingredients/add", (req, res) => {
-    res.render("ingredient/index");
-})
+// @desc updates and gets ingredients
+// app.get("/ingredients/add", (req, res) => {
+//     res.render("ingredient/index");
+// })
 
-app.post("/ingredients/add", async (req, res) => {
-    console.log(req.body);
-    try {
-        let ingredient = await Cuisine.create(req.body);
-        res.redirect("/ingredients/add");
-        console.log(ingredient);
-    }
-    catch(err) { console.log(err); }
-})
+// app.post("/ingredients/add", async (req, res) => {
+//     console.log(req.body);
+//     try {
+//         let ingredient = await Cuisine.create(req.body);
+//         res.redirect("/ingredients/add");
+//         console.log(ingredient);
+//     }
+//     catch(err) { console.log(err); }
+// })
 
 //// ----------- ALL ROUTES THAT REQUIRE GFS ---------
 var currentPos;
@@ -197,8 +198,9 @@ app.get("/breakie/show/:id", (req, res) => {
         Users.findById(breakie.creator._id).
         then( seller => {
             let sellerHasBankAcc = (seller.bankAcc == null) ? false : true;
+            let user = (res.locals.currentUser == null) ? null : JSON.stringify(res.locals.currentUser);
             gfs.files.findOne({ _id: breakie.image }, (err, file) => {
-                res.render("breakie/show", { breakie, sellerHasBankAcc, file, user: JSON.stringify(res.locals.currentUser), key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
+                res.render("breakie/show", { breakie, sellerHasBankAcc, file, user, key: process.env.GOOGLE_API_KEY, stripeAPIKey: process.env.STRIPE_PUBLIC_KEY })
             })
         })
     }).
