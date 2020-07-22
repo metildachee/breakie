@@ -88,16 +88,16 @@ app.use(function(req, res, next){
     next();
 })
 
-// // app.get("/ingredients/add", (req, res) => {
-// //     res.render("ingredient/index");
-// // })
-
-// app.post("/ingredients/add", async (req, res) => {
-//     console.log(req.body);
-//     let ingredient = await Cuisines.create(req.body);
-//     console.log(ingredient);
-//     res.redirect("/ingredients/add");
+// app.get("/ingredients/add", (req, res) => {
+//     res.render("ingredient/index");
 // })
+
+app.post("/ingredients/add", async (req, res) => {
+    console.log(req.body);
+    let ingredient = await Cuisines.create(req.body);
+    console.log(ingredient);
+    res.redirect("/ingredients/add");
+})
 
 //// ----------- ALL ROUTES THAT REQUIRE GFS ---------
 var currentPos;
