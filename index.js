@@ -25,6 +25,7 @@ let gfs;
 //     useFindAndModify: false,
 //     useCreateIndex: true,
 // }, (err, db) => { 
+//     console.log(db);
 //     gfs = Grid(db.db, mongoose.mongo);
 //     gfs.collection('uploads');
 //     console.log("Mongodb connected!"); 
@@ -37,7 +38,7 @@ mongoose.connect(process.env.PROD_DATABASE, {
     useCreateIndex: true,
 }).
 then( db => { 
-    gfs = Grid(db, mongoose.mongo);
+    gfs = Grid(db.connection.db, mongoose.mongo);
     gfs.collection('uploads');
     console.log("Mongodb connected!"); 
 }).
