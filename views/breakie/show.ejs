@@ -137,15 +137,15 @@
         });
     }
     
-    // function initMap() { 
-    //     let breakie = JSON.parse(document.getElementById("breakie").innerText);
-    //     let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
-    //     var map = new google.maps.Map(
-    //         document.getElementById('indi-breakie-map'), {zoom: 14, center: sellerCoords });
-    //     let marker = new google.maps.Marker({position: sellerCoords, map: map});
-    // }
+    function initMap() { 
+        let breakie = JSON.parse(document.getElementById("breakie").innerText);
+        let sellerCoords = {lat: parseFloat(breakie.creator.location.coordinates[1]), lng: parseFloat(breakie.creator.location.coordinates[0])};
+        var map = new google.maps.Map(
+            document.getElementById('indi-breakie-map'), {zoom: 14, center: sellerCoords });
+        let marker = new google.maps.Marker({position: sellerCoords, map: map});
+    }
 </script>
 
-<!-- <script async defer
+<script async defer
 src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
-</script> -->
+</script>

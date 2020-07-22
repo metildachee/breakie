@@ -127,28 +127,28 @@ app.get("/", async (req, res) => {
         })
         // @desc get distance
         // @google_api
-        // let addrBreakies = sortedBreakies.map( breakies => { 
-        //     return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
-        // }).join("");
-        // addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
+        let addrBreakies = sortedBreakies.map( breakies => { 
+            return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
+        }).join("");
+        addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         
         let distanceArray = [];
-        // @google_api
-        // axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
-        //     params: {
-        //         origins:currentPos.lat+","+currentPos.lng,
-        //         destinations:addrBreakies, 
-        //         mode: "walking|bicyling|bus",
-        //         key: process.env.GOOGLE_API_KEY
-        //     }
-        // }).
-        // then( data => {
-        //     data.data.rows.forEach( row => {
-        //         row.elements.forEach( value => { distanceArray.push(value.duration.text); })
-        //     })
+        @google_api
+        axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+            params: {
+                origins:currentPos.lat+","+currentPos.lng,
+                destinations:addrBreakies, 
+                mode: "walking|bicyling|bus",
+                key: process.env.GOOGLE_API_KEY
+            }
+        }).
+        then( data => {
+            data.data.rows.forEach( row => {
+                row.elements.forEach( value => { distanceArray.push(value.duration.text); })
+            })
             res.render("breakie/index", { distance: distanceArray, sellers: JSON.stringify(sellers), breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
-        // } ).
-        // catch(err => console.log(err) );
+        } ).
+        catch(err => console.log(err) );
     }
     catch(err) { console.log(err); }
 })
