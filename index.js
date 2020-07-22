@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
 const algoliasearch = require('algoliasearch');
+const Ingredient = require('./models/ingredient.model');
 
 require("dotenv").config();
 let gfs;
@@ -94,9 +95,12 @@ app.get("/ingredients/add", (req, res) => {
 
 app.post("/ingredients/add", async (req, res) => {
     console.log(req.body);
-    let ingredient = await Cuisines.create(req.body);
-    console.log(ingredient);
-    res.redirect("/ingredients/add");
+    try {
+        let ingredient = await Ingredient.create(req.body);
+        res.redirect("/ingredients/add");
+        console.log(ingredient);
+    }
+    catch(err) { console.log(err); }
 })
 
 //// ----------- ALL ROUTES THAT REQUIRE GFS ---------
