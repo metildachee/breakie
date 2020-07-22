@@ -52,7 +52,11 @@ header {
     align-items: center;
 }
 /* testing */
-.red { background-color: red; }
+.red { background-color: red !important; }
+.hover-color { 
+    background: linear-gradient(269.65deg, #fd5959 0.90%, #ff7f07 99.00%), #ff8127 !important;  
+    color: white;
+}
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -66,7 +70,8 @@ header {
     color: #EEEEEE;;
     padding: 20px;
     border-radius: 10px;
-    background: linear-gradient(269.65deg, #EA7070 0.37%, #FF9A3C 99.61%), #FF8E3C;    text-align: center;
+    background: linear-gradient(269.65deg, #EA7070 0.37%, #FF9A3C 99.61%), #FF8E3C;    
+    text-align: center;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-top: 5px;
 }

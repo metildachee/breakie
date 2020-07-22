@@ -153,6 +153,7 @@ app.get("/", async (req, res) => {
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         
         let distanceArray = [];
+        
         // @google_api
         axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
             params: {
