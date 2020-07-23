@@ -37,8 +37,10 @@
         </div>
         <% hoverArray = JSON.stringify(hoverArray) %>
     </div>
+<script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+<script src="/js/script.js"></script>
 <script defer>
     let currentPos, breakies, sellers, distance, hoverArray, currUser, sellerDistance;
     /*
@@ -82,14 +84,13 @@
                 label: { text: `${sellerDistance[index]}`, color: "orange", fontWeight: "bold" },
                 position: sellerCoords, map: map
             });
-            console.log(hoverArray);
-            console.log(sellerDistance);
-            console.log(seller.username);
+
             marker.addListener('mouseover', e => { 
                 hoverArray[seller.username].forEach( item => {
                     document.getElementById(`index-${item}`).classList.add("hover-color");
                 })
             });
+
             marker.addListener('mouseout', e => { 
                 hoverArray[seller.username].forEach( item => {
                     document.getElementById(`index-${item}`).classList.remove("hover-color");
@@ -101,11 +102,10 @@
                 if (!published.deleted) 
                     contentString += `<p class="mb-0">${published.name} (${published.qty}) @$${published.price}.00</p>`
             })
+
             contentString += `</div>`;
-            console.log(contentString);
             let infowindow = new google.maps.InfoWindow({ content: contentString });
             marker.addListener('click', () => { infowindow.open(map, marker) });   
-            console.log(marker);
             index++;             
         }
         index = 0;

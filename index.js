@@ -14,24 +14,18 @@ const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
 const algoliasearch = require('algoliasearch');
-const Ingredient = require('./models/ingredient.model');
-const Cuisine = require('./models/cuisine.model');
+
+const http = require('http');
+const { connected } = require('process');
+const app = express();
+const server = http.createServer(app);
+const io = require('socket.io').listen(server);
 
 require("dotenv").config();
+
+// @desc gfs and mongoose
 let gfs;
 
-// mongoose.Promise = Promise;
-// mongoose.connect(process.env.PROD_DATABASE, {
-//     useNewUrlParser : true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//     useCreateIndex: true,
-// }, (err, db) => { 
-//     console.log(db);
-//     gfs = Grid(db.db, mongoose.mongo);
-//     gfs.collection('uploads');
-//     console.log("Mongodb connected!"); 
-// });
 mongoose.Promise = Promise;
 mongoose.connect(process.env.PROD_DATABASE, {
     useNewUrlParser : true,
@@ -62,7 +56,7 @@ const storage = new MulterGridfsStorage({
 
 const upload = multer({ storage });
 
-const app = express();
+// @desc initialise set ups
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true}));
@@ -90,6 +84,9 @@ app.use(function(req, res, next){
     next();
 })
 
+// const Ingredient = require('./models/ingredient.model');
+// const Cuisine = require('./models/cuisine.model');
+
 // @desc updates and gets ingredients
 // app.get("/ingredients/add", (req, res) => {
 //     res.render("ingredient/index");
@@ -105,7 +102,38 @@ app.use(function(req, res, next){
 //     catch(err) { console.log(err); }
 // })
 
-//// ----------- ALL ROUTES THAT REQUIRE GFS ---------
+// @desc io stuff
+let user = {};
+let connectedUsers = {};
+io.on("connection", socket => {
+
+    if (!connectedUsers.hasOwnProperty(user._id)) 
+        connectedUsers[user._id] = socket.id; 
+    console.log(connectedUsers);
+
+    socket.on("openChat", otherUserId => {
+        let chatLog = "User is not online";
+        Users.findById()
+        Users.findById(otherUserId).
+        then( user => {
+            let chatLog = `${user.username} is unavailable`;
+            if (connectedUsers.hasOwnProperty(otherUserId)) {
+                chatLog = `${user.username} is available.`
+                // io.to(findBySocketId(otherUserId)).emit("startChat", user.username);
+            }
+            io.to(socket.id).emit("chatLog", chatLog);
+        })
+    })
+})
+
+function findBySocketId(userId) {
+    for (const [key, value] of Object.entries(connectedUsers)) {
+        if (value == userId) return key;
+    }
+}
+
+
+// @desc routes that require gfs
 
 function getSortedArray(orderArray, jumbledArray) {
     let sortedArray = []
@@ -121,6 +149,7 @@ function getSortedArray(orderArray, jumbledArray) {
 app.get("/", async (req, res) => {
     res.locals.atHomePage = true;
     let currentPos = {};
+    user = req.user;
     if (req.user == undefined) currentPos = { lng: 103.8198, lat: 1.3521 };
     else currentPos = { lat: req.user.location.coordinates[1], lng: req.user.location.coordinates[0] };
     
@@ -265,10 +294,13 @@ app.post("/search", async (req, res) => {
     catch( err => console.log(err) );
 })
 
+
+
 app.use("/auth", require("./routes/auth.routes.js"));
 app.use("/breakie", checkUser, require("./routes/breakie.routes.js"));
 app.use("/order", checkUser, require("./routes/order.routes.js"));
 app.use("/user", require("./routes/user.routes.js"));
 app.use("/", require("./routes/breakie.routes.js"));
   
-app.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));
+// app.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));
+server.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));
