@@ -114,12 +114,8 @@ app.use(function(req, res, next){
         socket.on("openChat", msgObj => {
             Users.findById(msgObj.targetId).
             then( otherUser => {
-                console.log("this is the person I'm trying to reach");
-                console.log(otherUser);
-                console.log("this is me");
-                console.log(msgObj.originId);
                 let chatLog = `${otherUser.username} is unavailable`;
-                if (!isNullOrUndefined(connectedUsers[msgObj.targetId]) || !connectedUsers[msgObj.targetId].isAvail) {
+                if ((connectedUsers[msgObj.targetId]) != null && connectedUsers[msgObj.targetId].isAvail) {
                     chatLog = `${otherUser.username} is available.`;
                     Users.findById(msgObj.originId).
                     then( currUser => {
@@ -139,6 +135,11 @@ app.use(function(req, res, next){
             connectedUsers[obj.originId].isAvail = false;
             // io.to(connectedUsers[obj.targetId]).emit("receiveMsg", 
             //     { id: uniqueUser._id, username: uniqueUser.username });
+        })
+
+        socket.on("leftChat", msgObj => {
+            io.to(connectedUsers[msgObj.targetId].socketId).emit("leftChat", `${msgObj.originUsername} has left the chat.`);
+            connectedUsers[msgObj.targetId].isAvail = true;
         })
 
         socket.on("sendMsg", msg  => {

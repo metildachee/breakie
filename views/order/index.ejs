@@ -140,7 +140,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Chat with <span id="otherUser"></span></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" id="dismissBtn" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -154,7 +154,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="closeBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button id="sendMsgBtn" type="button" class="btn btn-primary">Send message</button>
         </div>
       </div>
@@ -170,6 +170,8 @@
     let sendMsg = document.getElementById("message-text");
     let responseBtn = document.getElementById("modalEvent");
     let messageContainer = document.getElementById("msgContainer");
+    document.getElementById("closeBtn").addEventListener('click', closeConnection);
+    document.getElementById("dismissBtn").addEventListener('click', closeConnection);
     let otherUserId = "";
     Array.from(document.getElementsByClassName('chat-btn')).forEach( element => {
         element.addEventListener('click', () => {
@@ -177,6 +179,11 @@
             socket.emit("openChat", { originId: currUser._id, targetId: otherUserId, msg: null }); // I want to open a chat with the other ID
         });
     });
+
+    function closeConnection() {
+        socket.emit("leftChat", { originId: currUser._id, targetId: otherUserId, originUsername: currUser.username });
+        responseBtn.classList.add("display-none");
+    }
 
     sendMsgBtn.addEventListener('click', () => {
         let p = document.createElement("p");
@@ -210,6 +217,12 @@
 
     socket.on("receiveMsg", msg => {
         console.log("I have received a message");
+        let p = document.createElement("p");
+        p.textContent = msg;
+        messageContainer.append(p);
+    })
+
+    socket.on("leftChat", msg => {
         let p = document.createElement("p");
         p.textContent = msg;
         messageContainer.append(p);
