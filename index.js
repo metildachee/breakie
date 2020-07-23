@@ -106,24 +106,15 @@ app.use(function(req, res, next){
 // })
 
 //// ----------- ALL ROUTES THAT REQUIRE GFS ---------
-var currentPos;
-//@desc gets current position of user
-app.post("/", (req, res) => {
-    currentPos = { lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng) };
-    console.log("thats all for now");
-})
+
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
-    console.log("meow");
     res.locals.atHomePage = true;
-    // @bug need to fix this part where lat and long should actually come from the server
-    if (currentPos == undefined) {
-        console.log("current pos is undefined");
-        currentPos = { lat: 1.3521, lng: 103.8198 };
-    } else {
-        console.log(currentPos + " is updated");
-    }
+    let currentPos = {};
+    if (req.user == undefined) currentPos = { lng: 103.8198, lat: 1.3521 };
+    else currentPos = { lat: req.user.location.coordinates[1], lng: req.user.location.coordinates[0] };
+    
     try {
         let sortedUsers = await Users.
             aggregate([{ 
@@ -153,6 +144,7 @@ app.get("/", async (req, res) => {
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         console.log(addrBreakies);
+        console.log(currentPos);
         let distanceArray = [];
         
         // @google_api
@@ -169,7 +161,8 @@ app.get("/", async (req, res) => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
             console.log(distanceArray);
-            res.render("breakie/index", { distance: distanceArray, sellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+            let user = (res.locals.currentUser == null) ? null : JSON.stringify(res.locals.currentUser);
+            res.render("breakie/index", { distance: distanceArray, user, sellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
         } ).
         catch(err => console.log(err) );
     }
