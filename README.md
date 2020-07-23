@@ -33,22 +33,11 @@ Core app features:
 4. UI/UX
 5. Mobile responsive
 
----- 
-1. Google Maps markers
-2. For sellers, auto removing of orders after timeframe.
-3. Stripe API
-4. Telegram bot API
-5. Rating system
-6. Google oAuth
-7. Chat
-8. Searching
-9. Filtering
-
-----
-1. Do everything in TypeScript
-2. IonicJS
-3. Entice people to actually use the app
-4. Allow sharing on Instagram stories
+# Technologies used
+## Google API
+## Stripe API
+## socket.io
+## instantsearch.js
 
 ## Things that I tried but didn't work
 1. [Pusher](https://pusher.com/)
