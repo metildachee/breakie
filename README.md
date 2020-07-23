@@ -20,21 +20,36 @@ Who is Breakie's target audience?
 Busy bees can visit the site to see what's cooking near them.
 Cooking enthusiasts can visit the site to share what they're cooking for the day.
 
-
 # Wireframes
-![Homepage]('https://raw.githubusercontent.com/metildachee/breakie/master/public/img/homepage.jpg?token=APQA23UWSJNPAIXXXQZ33FK7ELPNW')
+<img src="https://raw.githubusercontent.com/metildachee/breakie/master/public/img/homepage.jpg?token=APQA23UWSJNPAIXXXQZ33FK7ELPNW">
 
-![Orders page]('https://github.com/metildachee/breakie/blob/master/public/img/orders.png?raw=true')
+<img src="https://github.com/metildachee/breakie/blob/master/public/img/orders.png?raw=true">
 
-![Card]('https://raw.githubusercontent.com/metildachee/breakie/master/public/img/card.png?token=APQA23SSHUUGI27BOTWUDPC7ELPPE')
+<img src="https://raw.githubusercontent.com/metildachee/breakie/master/public/img/card.png?token=APQA23SSHUUGI27BOTWUDPC7ELPPE">
 
-Please see [here](https://www.figma.com/file/v3kEtgMjBub29EzJlEfG8N/combined) for full wireframe set.
+Please see <a href="https://www.figma.com/file/v3kEtgMjBub29EzJlEfG8N/combined" target="_blank">here</a> for full wireframe.
 
 # Technologies used
-## Google API
-## Stripe API
-## socket.io
-## instantsearch.js
+## Front-end
+### HTML, CSS, Javascript
+
+## Backend
+### Node.js, Express.js
+### Multer
+### MongoDB, mongoose
+### socket.io
+For chatting between busy bees and cook enthusiasts.
+
+### APIs
+#### Google Maps
+Used for geocoding, distance matrix, map visualisation.
+
+#### Stripe Checkout
+Used for payment.
+#### [Algolia](https://www.algolia.com/doc/guides/building-search-ui/resources/ui-and-ux-patterns/in-depth/autocomplete/js/)
+Used for real-time autocomplete and database search.
+<img src="public/img/search.gif">
+
 
 ## Things that I tried but didn't work
 1. [Pusher](https://pusher.com/)
