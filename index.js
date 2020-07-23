@@ -161,6 +161,7 @@ app.get("/", async (req, res) => {
             }
         }).
         then( data => {
+            console.log("this is the key");
             console.log(process.env.GOOGLE_SERVER_KEY);
             console.log(data);
             data.data.rows.forEach( row => {
