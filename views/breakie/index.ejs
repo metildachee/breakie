@@ -1,11 +1,11 @@
 <span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near 
-    <span id="currentAddr">you 
-        <span class="badge badge-warning">
-            Refresh to see new breakies
-        </span>
+    <span id="currentAddr">you </span>
+    <span id="login-prompt" class="badge badge-warning">
+        Login to see breakies near you
     </span>
 </span>
     <div class="row">
+        <% let currUser = JSON.stringify(currentUser); %> 
         <div class="col-md-8 grid">
             <p id="breakies" style="display: none"><%= JSON.stringify(breakies) %></p>
             <p id="sellers" style="display: none"><%= JSON.stringify(sellers) %></p>
@@ -37,45 +37,51 @@
         </div>
         <% hoverArray = JSON.stringify(hoverArray) %>
     </div>
+<script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+<script src="/js/script.js"></script>
 <script defer>
-    let currentPos;
-    // @desc on page loads
-    (function getCurrentLocation() {
-        if (!navigator.geolocation) return;
-        navigator.geolocation.getCurrentPosition( 
-            position => {
-            currentPos = { lat: position.coords.latitude, lng: position.coords.longitude };
-            $.post("/", currentPos).
-            done(() => console.log( "Coordinates sent successfully" )).
-            fail(() => console.log('An error occured during transmission.'));
-        }, 
-            err => { console.log(err); })
-    })();
+    let currentPos, breakies, sellers, distance, hoverArray, currUser, sellerDistance;
+    /*
+    * @desc this function gets the user's current location and makes a post request to the server
+    */
+    // (function getCurrentLocation() {
+    //     if (!navigator.geolocation) return;
+    //     navigator.geolocation.getCurrentPosition( 
+    //         position => {
+    //         currentPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+    //         $.post("/", currentPos).
+    //         done(() => console.log( "Coordinates sent successfully" )).
+    //         fail(() => console.log('An error occured during transmission.'));
+    //     }, 
+    //         err => { console.log(err); })
+    // })();
 
-    let breakies = JSON.parse(document.getElementById("breakies").innerText);
-    let sellers = JSON.parse(document.getElementById("sellers").innerText);
+    breakies = JSON.parse(document.getElementById("breakies").innerText);
+    sellers = JSON.parse(document.getElementById("sellers").innerText);
+    distance = "<%= distance %>".split(",");
+    sellerDistance = "<%= sellerDistance %>".split(",");
+    hoverArray = JSON.parse(<%- JSON.stringify(hoverArray) %>);
+    if ('<%- currUser %>' == "") currentPos = { lat: 1.3521, lng: 103.8198 };
+    else {
+        currUser = JSON.parse(JSON.stringify(<%- currUser %>));
+        currentPos = { lat: currUser.location.coordinates[1], lng: currUser.location.coordinates[0] };
+        document.getElementById("login-prompt").classList.add("display-none");
+    }
 
-    let distance = "<%= distance %>";
-    distance = distance.split(",");
-    let hoverArray = <%- JSON.stringify(hoverArray) %>;
-    hoverArray = JSON.parse(hoverArray);
+    // @desc inits the map
+    function initMap() {       
+        let index = 0, map, contentString, distanceAway, sellerCoords;
 
-    // @un-comment
-    function initMap() {
-        if (currentPos == undefined) currentPos = { lat: 1.3521, lng: 103.8198 };
         map = new google.maps.Map(document.getElementById("map"), { center: currentPos, zoom: 10 });
-        let marker = new google.maps.Marker({ position: currentPos, map: map });
+        marker = new google.maps.Marker({ position: currentPos, map: map });
 
-        let index = 0;
         for (const seller of sellers) {
-            let distanceAway = (distance == undefined) ? seller.username : `${distance[index]}`;
-            let sellerCoords = {lat: parseFloat(seller.location.coordinates[1]), lng: parseFloat(seller.location.coordinates[0])};
-
+            sellerCoords = {lat: parseFloat(seller.location.coordinates[1]), lng: parseFloat(seller.location.coordinates[0])};
             let marker = new google.maps.Marker({
                 icon: 'img/icon.svg', 
-                label: { text: distanceAway, color: "orange", fontWeight: "bold" },
+                label: { text: `${sellerDistance[index]}`, color: "orange", fontWeight: "bold" },
                 position: sellerCoords, map: map
             });
 
@@ -84,24 +90,26 @@
                     document.getElementById(`index-${item}`).classList.add("hover-color");
                 })
             });
+
             marker.addListener('mouseout', e => { 
                 hoverArray[seller.username].forEach( item => {
                     document.getElementById(`index-${item}`).classList.remove("hover-color");
                 })
             });
 
-            let contentString = `<div class="orange-text medium-text">`;
+            contentString = `<div class="orange-text medium-text">`;
             seller.publishes.forEach( published => {
                 if (!published.deleted) 
                     contentString += `<p class="mb-0">${published.name} (${published.qty}) @$${published.price}.00</p>`
             })
+
             contentString += `</div>`;
             let infowindow = new google.maps.InfoWindow({ content: contentString });
             marker.addListener('click', () => { infowindow.open(map, marker) });   
             index++;             
         }
         index = 0;
-        if (currentPos != { lat: 1.3521, lng: 103.8198 }) updateNeighbour();
+        updateNeighbour();
     }
 
     function updateNeighbour() {

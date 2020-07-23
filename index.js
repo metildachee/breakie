@@ -14,24 +14,18 @@ const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
 const algoliasearch = require('algoliasearch');
-const Ingredient = require('./models/ingredient.model');
-const Cuisine = require('./models/cuisine.model');
+
+const http = require('http');
+const { isNull, isNullOrUndefined } = require('util');
+const app = express();
+const server = http.createServer(app);
+const io = require('socket.io').listen(server);
 
 require("dotenv").config();
+
+// @desc gfs and mongoose
 let gfs;
 
-// mongoose.Promise = Promise;
-// mongoose.connect(process.env.PROD_DATABASE, {
-//     useNewUrlParser : true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//     useCreateIndex: true,
-// }, (err, db) => { 
-//     console.log(db);
-//     gfs = Grid(db.db, mongoose.mongo);
-//     gfs.collection('uploads');
-//     console.log("Mongodb connected!"); 
-// });
 mongoose.Promise = Promise;
 mongoose.connect(process.env.PROD_DATABASE, {
     useNewUrlParser : true,
@@ -62,7 +56,7 @@ const storage = new MulterGridfsStorage({
 
 const upload = multer({ storage });
 
-const app = express();
+// @desc initialise set ups
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true}));
@@ -90,6 +84,9 @@ app.use(function(req, res, next){
     next();
 })
 
+// const Ingredient = require('./models/ingredient.model');
+// const Cuisine = require('./models/cuisine.model');
+
 // @desc updates and gets ingredients
 // app.get("/ingredients/add", (req, res) => {
 //     res.render("ingredient/index");
@@ -104,28 +101,81 @@ app.use(function(req, res, next){
 //     }
 //     catch(err) { console.log(err); }
 // })
+    // @desc io stuff
+    let uniqueUser = {};
+    let connectedUsers = {}; // userId: socketId: isAvail:
+    io.on("connection", socket => {
 
-//// ----------- ALL ROUTES THAT REQUIRE GFS ---------
-var currentPos;
-//@desc gets current position of user
-app.post("/", (req, res) => {
-    currentPos = { lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng) };
-    console.log("thats all for now");
+        if (uniqueUser._id == undefined) return;
+        if (!connectedUsers.hasOwnProperty(uniqueUser._id)) 
+            connectedUsers[uniqueUser._id] = { socketId: socket.id, isAvail: true }; 
+        console.log(connectedUsers);
+
+        socket.on("openChat", msgObj => {
+            Users.findById(msgObj.targetId).
+            then( otherUser => {
+                let chatLog = `${otherUser.username} is unavailable`;
+                if ((connectedUsers[msgObj.targetId]) != null && connectedUsers[msgObj.targetId].isAvail) {
+                    chatLog = `${otherUser.username} is available.`;
+                    Users.findById(msgObj.originId).
+                    then( currUser => {
+                        connectedUsers[msgObj.originId].isAvail = false;
+                        io.to(connectedUsers[msgObj.targetId].socketId).emit("startChat", 
+                            { username: currUser.username, originId: currUser._id });
+                    }).
+                    catch(err => console.log(err))
+                }
+                io.to(socket.id).emit("chatLog", chatLog);
+            }).
+            catch(err => console.log(err))
+        })
+
+        socket.on("updateHeader", obj => {
+            console.log("someone joined the room");
+            connectedUsers[obj.originId].isAvail = false;
+            io.to(connectedUsers[obj.targetId].socketId).emit("updateHeader", `${obj.username} has entered the chat.` );
+        })
+
+        socket.on("leftChat", msgObj => {
+            io.to(connectedUsers[msgObj.targetId].socketId).emit("leftChat", `${msgObj.originUsername} has left the chat.`);
+            connectedUsers[msgObj.targetId].isAvail = true;
+        })
+
+        socket.on("sendMsg", msg  => {
+            io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", `${msg.username}: ${msg.msg}` );
+        })
 })
+
+function getKeyByValue(connectedUsers, userId) {
+    return Object.keys(connectedUsers).find(key => connectedUsers[key] === userId);
+}
+
+
+// @desc routes that require gfs
+
+function getSortedArray(orderArray, jumbledArray) {
+    let sortedArray = []
+    orderArray.forEach( ordered => {
+        jumbledArray.forEach( jumbled => {
+            if (jumbled._id.equals(ordered._id)) sortedArray.push(jumbled);
+        })
+    })
+    return sortedArray;
+}
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
-    console.log("meow");
     res.locals.atHomePage = true;
-    // @bug need to fix this part where lat and long should actually come from the server
-    if (currentPos == undefined) {
-        console.log("current pos is undefined");
-        currentPos = { lat: 1.3521, lng: 103.8198 };
-    } else {
-        console.log(currentPos + " is updated");
-    }
+    let currentPos = {};
+    uniqueUser = req.user;
+    if (req.user == undefined) currentPos = { lng: 103.8198, lat: 1.3521 };
+    else currentPos = { lat: req.user.location.coordinates[1], lng: req.user.location.coordinates[0] };
+    
     try {
-        let sortedUsers = await Users.
+        let sortedUsers, creators, sellers, breakies, order, addrBreakies, prevValue = "";
+        let sortedBreakies = [], sellerDistanceArray = [], distanceArray = [], sortedSellers = [], user = null;
+        
+        sortedUsers = await Users.
             aggregate([{ 
                 $geoNear: { 
                     near: 
@@ -134,42 +184,46 @@ app.get("/", async (req, res) => {
                     distanceField: "distanceField"
                 }
             }])
-        let creators = sortedUsers.filter( user => user.publishes.length > 0 );
-        let sellers = await Users.find({ _id: { $in: creators }}).populate("publishes");
-        let breakies = creators.map( creator => { return creator.publishes; });
-        breakies = breakies.flat();
-        let order = breakies;
+        creators = sortedUsers.filter( user => user.publishes.length > 0 );
+        sellers = await Users.find({ _id: { $in: creators }}).populate("publishes");
+        sortedSellers = getSortedArray(creators, sellers);
+
+        breakies = creators.map( creator => { return creator.publishes; }).flat();
+        order = breakies;
         breakies = await Breakies.find({ _id: { $in: breakies }, deleted: false }).populate("creator ingredients cuisine");
-        let sortedBreakies = [];
-        order.forEach( no => {
-            breakies.forEach( breakie => {
-                if (breakie._id.equals(no)) sortedBreakies.push(breakie);
-            })
-        })
-        // @desc get distance
-        // @google_api
-        let addrBreakies = sortedBreakies.map( breakies => { 
+        sortedBreakies = getSortedArray(order, breakies);
+
+        // @desc making the params for axios get
+        addrBreakies = sortedBreakies.map( breakies => { 
             return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
-        console.log(addrBreakies);
-        let distanceArray = [];
-        
-        // @google_api
+
         axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
             params: {
                 origins:currentPos.lat+","+currentPos.lng,
                 destinations:addrBreakies, 
-                mode: "walking|bicyling|bus",
-                key: process.env.GOOGLE_API_KEY
+                key:process.env.GOOGLE_SERVER_KEY,
+                mode:"walking|bicyling|bus"
             }
         }).
         then( data => {
             data.data.rows.forEach( row => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
-            console.log(distanceArray);
-            res.render("breakie/index", { distance: distanceArray, sellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+            prevValue = "";
+            sortedBreakies.forEach( (breakie, index) => {
+                if (breakie.creator.address != prevValue) 
+                    sellerDistanceArray.push(distanceArray[index]);
+                prevValue = breakie.creator.address;
+            })
+            if (res.locals.currentUser != null) user = JSON.stringify(res.locals.currentUser);
+            res.render("breakie/index", { distance: distanceArray, 
+                sellerDistance: sellerDistanceArray, 
+                user, sellers: sortedSellers, 
+                breakies: sortedBreakies, 
+                key: process.env.GOOGLE_API_KEY
+            });
         } ).
         catch(err => console.log(err) );
     }
@@ -258,10 +312,13 @@ app.post("/search", async (req, res) => {
     catch( err => console.log(err) );
 })
 
+
+
 app.use("/auth", require("./routes/auth.routes.js"));
 app.use("/breakie", checkUser, require("./routes/breakie.routes.js"));
 app.use("/order", checkUser, require("./routes/order.routes.js"));
 app.use("/user", require("./routes/user.routes.js"));
 app.use("/", require("./routes/breakie.routes.js"));
   
-app.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));
+// app.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));
+server.listen(process.env.PORT, () => console.log(`Go to localhost:${process.env.PORT}`));
