@@ -130,11 +130,10 @@ app.use(function(req, res, next){
             catch(err => console.log(err))
         })
 
-        socket.on("joinRoom", obj => {
+        socket.on("updateHeader", obj => {
             console.log("someone joined the room");
             connectedUsers[obj.originId].isAvail = false;
-            // io.to(connectedUsers[obj.targetId]).emit("receiveMsg", 
-            //     { id: uniqueUser._id, username: uniqueUser.username });
+            io.to(connectedUsers[obj.targetId].socketId).emit("updateHeader", `${obj.username} has entered the chat.` );
         })
 
         socket.on("leftChat", msgObj => {
@@ -143,7 +142,7 @@ app.use(function(req, res, next){
         })
 
         socket.on("sendMsg", msg  => {
-            io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", msg.msg );
+            io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", `${msg.username}: ${msg.msg}` );
         })
 })
 
