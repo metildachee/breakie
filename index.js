@@ -161,6 +161,7 @@ app.get("/", async (req, res) => {
             }
         }).
         then( data => {
+            console.log(process.env.GOOGLE_SERVER_KEY);
             console.log(data);
             data.data.rows.forEach( row => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
