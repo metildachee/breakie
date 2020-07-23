@@ -22,11 +22,11 @@ Cooking enthusiasts can visit the site to share what they're cooking for the day
 
 
 # Wireframes
-![Homepage]('public/img/homepage.png')
+![Homepage]('https://raw.githubusercontent.com/metildachee/breakie/master/public/img/homepage.jpg?token=APQA23UWSJNPAIXXXQZ33FK7ELPNW')
 
-![Orders page]('public/img/orders.png')
+![Orders page]('https://github.com/metildachee/breakie/blob/master/public/img/orders.png?raw=true')
 
-![Card]('public/img/card.png)
+![Card]('https://raw.githubusercontent.com/metildachee/breakie/master/public/img/card.png?token=APQA23SSHUUGI27BOTWUDPC7ELPPE')
 
 Please see [here](https://www.figma.com/file/v3kEtgMjBub29EzJlEfG8N/combined) for full wireframe set.
 
