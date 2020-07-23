@@ -151,8 +151,7 @@ app.get("/", async (req, res) => {
             return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
-        
-        // @google_api
+
         axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
             params: {
                 origins:currentPos.lat+","+currentPos.lng,
@@ -162,7 +161,9 @@ app.get("/", async (req, res) => {
             }
         }).
         then( data => {
+            console.log(data);
             data.data.rows.forEach( row => {
+                console.log(row);
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
             prevValue = "";
@@ -172,6 +173,8 @@ app.get("/", async (req, res) => {
                 prevValue = breakie.creator.address;
             })
             if (res.locals.currentUser != null) user = JSON.stringify(res.locals.currentUser);
+            console.log(distanceArray);
+            console.log(sellerDistanceArray);
             res.render("breakie/index", { distance: distanceArray, 
                 sellerDistance: sellerDistanceArray, 
                 user, sellers: sortedSellers, 
