@@ -102,48 +102,50 @@ app.use(function(req, res, next){
 //     catch(err) { console.log(err); }
 // })
     // @desc io stuff
-    let uniqueUser = {};
-    let connectedUsers = {}; // userId: socketId: isAvail:
-    io.on("connection", socket => {
+let uniqueUser = {};
+let connectedUsers = {}; // userId: socketId: isAvail:
+io.on("connection", socket => {
 
-        if (uniqueUser._id == undefined) return;
-        if (!connectedUsers.hasOwnProperty(uniqueUser._id)) 
-            connectedUsers[uniqueUser._id] = { socketId: socket.id, isAvail: true }; 
-        console.log(connectedUsers);
+    if (uniqueUser._id == undefined) return;
+    if (!connectedUsers.hasOwnProperty(uniqueUser._id)) 
+        connectedUsers[uniqueUser._id] = { socketId: socket.id, isAvail: true }; 
+    console.log(connectedUsers);
 
-        socket.on("openChat", msgObj => {
-            Users.findById(msgObj.targetId).
-            then( otherUser => {
-                let chatLog = `${otherUser.username} is unavailable`;
-                if ((connectedUsers[msgObj.targetId]) != null && connectedUsers[msgObj.targetId].isAvail) {
-                    chatLog = `${otherUser.username} is available.`;
-                    Users.findById(msgObj.originId).
-                    then( currUser => {
-                        connectedUsers[msgObj.originId].isAvail = false;
-                        io.to(connectedUsers[msgObj.targetId].socketId).emit("startChat", 
-                            { username: currUser.username, originId: currUser._id });
-                    }).
-                    catch(err => console.log(err))
-                }
-                io.to(socket.id).emit("chatLog", chatLog);
-            }).
-            catch(err => console.log(err))
-        })
+    socket.on("openChat", msgObj => {
+        Users.findById(msgObj.targetId).
+        then( otherUser => {
+            let chatLog = `${otherUser.username} is unavailable`;
+            if ((connectedUsers[msgObj.targetId]) != null && connectedUsers[msgObj.targetId].isAvail) {
+                chatLog = `${otherUser.username} is available.`;
+                Users.findById(msgObj.originId).
+                then( currUser => {
+                    connectedUsers[msgObj.originId].isAvail = false;
+                    io.to(connectedUsers[msgObj.targetId].socketId).emit("startChat", 
+                        { username: currUser.username, originId: currUser._id });
+                }).
+                catch(err => console.log(err))
+            }
+            io.to(socket.id).emit("chatLog", chatLog);
+        }).
+        catch(err => console.log(err))
+    })
 
-        socket.on("updateHeader", obj => {
-            console.log("someone joined the room");
-            connectedUsers[obj.originId].isAvail = false;
-            io.to(connectedUsers[obj.targetId].socketId).emit("updateHeader", `${obj.username} has entered the chat.` );
-        })
+    socket.on("updateHeader", obj => {
+        console.log("someone joined the room");
+        connectedUsers[obj.originId].isAvail = false;
+        io.to(connectedUsers[obj.targetId].socketId).emit("updateHeader", `${obj.username} has entered the chat.` );
+    })
 
-        socket.on("leftChat", msgObj => {
-            io.to(connectedUsers[msgObj.targetId].socketId).emit("leftChat", `${msgObj.originUsername} has left the chat.`);
-            connectedUsers[msgObj.targetId].isAvail = true;
-        })
+    socket.on("leftChat", msgObj => {
+        io.to(connectedUsers[msgObj.targetId].socketId).emit("leftChat", `${msgObj.originUsername} has left the chat.`);
+        connectedUsers[msgObj.targetId].isAvail = true;
+    })
 
-        socket.on("sendMsg", msg  => {
-            io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", `${msg.username}: ${msg.msg}` );
-        })
+    socket.on("disconnect", () => connectedUsers = {} )
+
+    socket.on("sendMsg", msg  => {
+        io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", `${msg.username}: ${msg.msg}` );
+    })
 })
 
 function getKeyByValue(connectedUsers, userId) {

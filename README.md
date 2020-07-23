@@ -44,12 +44,16 @@ For chatting between busy bees and cook enthusiasts.
 #### Google Maps
 Used for geocoding, distance matrix, map visualisation.
 
+Breakies are displayed in increasing travel time from user's address. When hovered, the map markers highlights the associated breakies. When clicked, a window appears with the breakies of that cook enthusiast. This can be helpful for busy bees who might be more interested in travel time than dishes.
+
+<img src="public/img/maps.gif">
+
 #### Stripe Checkout
 Used for payment.
+
 #### [Algolia](https://www.algolia.com/doc/guides/building-search-ui/resources/ui-and-ux-patterns/in-depth/autocomplete/js/)
 Used for real-time autocomplete and database search.
 <img src="public/img/search.gif">
-
 
 ## Things that I tried but didn't work
 1. [Pusher](https://pusher.com/)
