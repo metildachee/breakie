@@ -1,8 +1,7 @@
 <span class="orange-text"><span class="bold"><%= breakies.length %></span> breakies near 
-    <span id="currentAddr">you 
-        <span class="badge badge-warning">
-            Refresh to see new breakies
-        </span>
+    <span id="currentAddr">you </span>
+    <span id="login-prompt" class="badge badge-warning">
+        Login to see breakies near you
     </span>
 </span>
     <div class="row">
@@ -66,23 +65,26 @@
     else {
         currUser = JSON.parse(JSON.stringify(<%- currUser %>));
         currentPos = { lat: currUser.location.coordinates[1], lng: currUser.location.coordinates[0] };
+        document.getElementById("login-prompt").classList.add("display-none");
     }
 
     // @desc inits the map
     function initMap() {       
-        let marker, index = 0, map, contentString, infowindow, distanceAway, sellerCoords;
+        let index = 0, map, contentString, distanceAway, sellerCoords;
 
         map = new google.maps.Map(document.getElementById("map"), { center: currentPos, zoom: 10 });
         marker = new google.maps.Marker({ position: currentPos, map: map });
 
         for (const seller of sellers) {
             sellerCoords = {lat: parseFloat(seller.location.coordinates[1]), lng: parseFloat(seller.location.coordinates[0])};
-            marker = new google.maps.Marker({
+            let marker = new google.maps.Marker({
                 icon: 'img/icon.svg', 
                 label: { text: `${sellerDistance[index]}`, color: "orange", fontWeight: "bold" },
                 position: sellerCoords, map: map
             });
-
+            console.log(hoverArray);
+            console.log(sellerDistance);
+            console.log(seller.username);
             marker.addListener('mouseover', e => { 
                 hoverArray[seller.username].forEach( item => {
                     document.getElementById(`index-${item}`).classList.add("hover-color");
@@ -100,8 +102,10 @@
                     contentString += `<p class="mb-0">${published.name} (${published.qty}) @$${published.price}.00</p>`
             })
             contentString += `</div>`;
-            infowindow = new google.maps.InfoWindow({ content: contentString });
+            console.log(contentString);
+            let infowindow = new google.maps.InfoWindow({ content: contentString });
             marker.addListener('click', () => { infowindow.open(map, marker) });   
+            console.log(marker);
             index++;             
         }
         index = 0;
