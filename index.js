@@ -152,14 +152,15 @@ app.get("/", async (req, res) => {
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
 
-        axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
-            params: {
-                origins:currentPos.lat+","+currentPos.lng,
-                destinations:addrBreakies, 
-                key:process.env.GOOGLE_API_KEY,
-                mode:"walking|bicyling|bus"
-            }
-        }).
+        axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${currentPos.lat},${currentPos.lng}&destinations=${addrBreakies}&key=${process.env.GOOGLE_SERVER_KEY}&mode=walking%7Cbicyling%7Cbus` //, {
+            // params: {
+            //     origins:currentPos.lat+","+currentPos.lng,
+            //     destinations:addrBreakies, 
+            //     key:process.env.GOOGLE_API_KEY,
+            //     mode:"walking|bicyling|bus"
+            // }
+        //}
+        ).
         then( data => {
             console.log(data);
             data.data.rows.forEach( row => {
