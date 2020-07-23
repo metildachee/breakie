@@ -156,8 +156,8 @@ app.get("/", async (req, res) => {
             params: {
                 origins:currentPos.lat+","+currentPos.lng,
                 destinations:addrBreakies, 
-                mode: "walking|bicyling|bus",
-                key: process.env.GOOGLE_SERVER_KEY
+                key: process.env.GOOGLE_SERVER_KEY,
+                mode: "walking|bicyling|bus"
             }
         }).
         then( data => {
