@@ -62,8 +62,6 @@
 
     distance = "<%= distance %>".split(",");
     sellerDistance = "<%= sellerDistance %>".split(",");
-    console.log("seller distance");
-    console.log(sellerDistance);
     hoverArray = JSON.parse(<%- JSON.stringify(hoverArray) %>);
     console.log(distance);
     if ('<%- currUser %>' == "") currentPos = { lat: 1.3521, lng: 103.8198 };
