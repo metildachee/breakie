@@ -196,19 +196,18 @@ input[type="file"] { display: none; }
 #map {
     height: 100vh;  /* The height is 400 pixels */
     width: 33vw;
-    background-color: red;
 }
 
 #show-map {
     height: 100%;
     width: 100%;
-    background-color: red;
 }
 
 .mapContainer { 
     position: fixed;
     right: 0px;
     top: 40px;
+    bottom: 5px;
 }
 
 #indi-breakie-map {
