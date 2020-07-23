@@ -133,22 +133,19 @@
         </div>
     </div>
 </div>
-<button type="button" id="modalEvent" class="display-none btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
+<button type="button" id="modalEvent" class="display-none btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">New chat</button>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Chat with <span id="otherUser"></span></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <form>
-            <div class="form-group">
-              <label for="recipient-name" class="col-form-label">Recipient:</label>
-              <input type="text" class="form-control" id="recipient-name">
-            </div>
+            <div id="msgContainer"></div>
             <div class="form-group">
               <label for="message-text" class="col-form-label">Message:</label>
               <textarea class="form-control" id="message-text"></textarea>
@@ -157,7 +154,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Send message</button>
+          <button id="sendMsgBtn" type="button" class="btn btn-primary">Send message</button>
         </div>
       </div>
     </div>
@@ -166,16 +163,55 @@
 <script>
     // @sockets
     const socket = io();
+    let sendMsgBtn = document.getElementById("sendMsgBtn");
+    let sendMsg = document.getElementById("message-text");
+    let responseBtn = document.getElementById("modalEvent");
+    let messageContainer = document.getElementById("msgContainer");
+    let otherUserId = "";
     Array.from(document.getElementsByClassName('chat-btn')).forEach( element => {
         element.addEventListener('click', () => {
-            let otherId = element.childNodes[1].textContent;
-            console.log(otherId);
-            socket.emit("openChat", otherId); // I want to open a chat with the other ID
+            otherUserId = element.childNodes[1].textContent;
+            socket.emit("openChat", otherUserId); // I want to open a chat with the other ID
         });
     });
 
-    socket.on("chatLog", msgFromServer => {
-        document.getElementById("modalEvent").click();
-        console.log(msgFromServer);
+    sendMsgBtn.addEventListener('click', () => {
+        let p = document.createElement("p");
+        p.textContent = sendMsg.value;
+        messageContainer.append(p);
+        console.log(sendMsg);
+        socket.emit("sendMsg", { msg: sendMsg.value, id: otherUserId });
     })
+
+    // we receive information if the other person is available
+    socket.on("chatLog", msgFromServer => {
+        if (msgFromServer.includes("unavailable")) Swal.fire( `@${msgFromServer} Please try another time.`);
+        else {
+            // we will open up a new conversation
+            let username = msgFromServer.split(" ")[0];
+            stylingModal(username);
+            document.getElementById("modalEvent").click();
+        }
+    })
+
+    // we receive a request to start chat, we will display a button
+    socket.on("startChat", msg => {
+        stylingModal(msg.username);
+        responseBtn.classList.remove("display-none");
+        responseBtn.addEventListener('click', () => {
+            otherUserId = msg.id;
+            socket.emit("joinRoom", { id: msg.id, msg: "I have joined the room!" });
+        })
+    })
+
+    socket.on("receiveMsg", msg => {
+        console.log("I have received a message");
+        let p = document.createElement("p");
+        p.textContent = msg;
+        messageContainer.append(p);
+    })
+
+    function stylingModal(username) {
+        document.getElementById("otherUser").textContent = "@" + username;
+    }
 </script>

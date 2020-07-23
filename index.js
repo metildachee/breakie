@@ -105,6 +105,7 @@ app.use(function(req, res, next){
 // @desc io stuff
 let user = {};
 let connectedUsers = {};
+let index = 0;
 io.on("connection", socket => {
 
     if (!connectedUsers.hasOwnProperty(user._id)) 
@@ -112,24 +113,30 @@ io.on("connection", socket => {
     console.log(connectedUsers);
 
     socket.on("openChat", otherUserId => {
-        let chatLog = "User is not online";
-        Users.findById()
         Users.findById(otherUserId).
-        then( user => {
-            let chatLog = `${user.username} is unavailable`;
+        then( otherUser => {
+            let chatLog = `${otherUser.username} is unavailable`;
             if (connectedUsers.hasOwnProperty(otherUserId)) {
-                chatLog = `${user.username} is available.`
-                // io.to(findBySocketId(otherUserId)).emit("startChat", user.username);
+                chatLog = `${otherUser.username} is available.`;
+                io.to(connectedUsers[otherUserId]).emit("startChat", { username: user.username, id: user._id });
+                index++;
             }
             io.to(socket.id).emit("chatLog", chatLog);
         })
     })
+
+    socket.on("joinRoom", obj => {
+        console.log(user.username + " successfully joined room");
+        io.to(connectedUsers[obj.id]).emit("receiveMsg", { id: user._id, username: user.username });
+    })
+
+    socket.on("sendMsg", msg  => {
+        io.to(connectedUsers[msg.id]).emit("receiveMsg", msg.msg);
+    })
 })
 
-function findBySocketId(userId) {
-    for (const [key, value] of Object.entries(connectedUsers)) {
-        if (value == userId) return key;
-    }
+function getKeyByValue(connectedUsers, userId) {
+    return Object.keys(connectedUsers).find(key => connectedUsers[key] === userId);
 }
 
 
