@@ -107,6 +107,44 @@ app.use(function(req, res, next){
 
 //// ----------- ALL ROUTES THAT REQUIRE GFS ---------
 
+function getSortedArray(orderArray, jumbledArray) {
+    let sortedArray = []
+    orderArray.forEach( ordered => {
+        jumbledArray.forEach( jumbled => {
+            if (jumbled._id.equals(ordered._id)) sortedArray.push(jumbled);
+        })
+    })
+    return sortedArray;
+}
+
+async function getDistanceArray(destinationArray, currentPos) {
+    try {
+        let distanceArray = [];
+        let data = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+            params: {
+                origins:currentPos.lat+","+currentPos.lng,
+                destinations:destinationArray, 
+                mode: "walking|bicyling|bus",
+                key: process.env.GOOGLE_API_KEY
+            }
+        });
+        // }).
+        // then( data => {
+        //     data.data.rows.forEach( row => {
+        //         row.elements.forEach( value => { distanceArray.push(value.duration.text); })
+        //     })
+        //     console.log(distanceArray);
+        //     return distanceArray;
+        // } ).
+        // catch(err => console.log(err) );
+        data.data.rows.forEach( row => {
+            row.elements.forEach( value => { distanceArray.push(value.duration.text); })
+        })
+        console.log(distanceArray);
+        return distanceArray;
+    }
+    catch(err) { console.log(err); }
+}
 
 // @desc displays homepage
 app.get("/", async (req, res) => {
@@ -116,7 +154,8 @@ app.get("/", async (req, res) => {
     else currentPos = { lat: req.user.location.coordinates[1], lng: req.user.location.coordinates[0] };
     
     try {
-        let sortedUsers = await Users.
+        let sortedUsers, creators, sellers, breakies, order, sortedBreakies = [], addrBreakies, distanceArray = [], sortedSellers = [], user = null;
+        sortedUsers = await Users.
             aggregate([{ 
                 $geoNear: { 
                     near: 
@@ -125,27 +164,47 @@ app.get("/", async (req, res) => {
                     distanceField: "distanceField"
                 }
             }])
-        let creators = sortedUsers.filter( user => user.publishes.length > 0 );
-        let sellers = await Users.find({ _id: { $in: creators }}).populate("publishes");
-        let breakies = creators.map( creator => { return creator.publishes; });
-        breakies = breakies.flat();
-        let order = breakies;
+        // filter out all creators who does not have any publishes
+        creators = sortedUsers.filter( user => user.publishes.length > 0 );
+        sellers = await Users.find({ _id: { $in: creators }}).populate("publishes");
+        
+        // ordering sellers
+        // I have a listed order of creators, and I want to sort the sellers according to that
+        // creators.forEach( creator => {
+        //     sellers.forEach( seller => {
+        //         if (seller._id.equals(creator._id)) sortedSellers.push(seller);
+        //     })
+        // })
+        sortedSellers = getSortedArray(creators, sellers);
+        let addrSellers = sortedSellers.map( seller => { 
+            return seller.location.coordinates[1].toString() + "," + seller.location.coordinates[0].toString() +"|" 
+        }).join("");
+        addrSellers = addrSellers.substring(0, addrSellers.length - 1);
+        let sellerDistanceArray = [];
+        // (async() => await getDistanceArray(addrSellers, currentPos))();
+
+        // ordering breakies
+        breakies = creators.map( creator => { return creator.publishes; }).flat();
+        // breakies = breakies.flat();
+        order = breakies;
         breakies = await Breakies.find({ _id: { $in: breakies }, deleted: false }).populate("creator ingredients cuisine");
-        let sortedBreakies = [];
-        order.forEach( no => {
-            breakies.forEach( breakie => {
-                if (breakie._id.equals(no)) sortedBreakies.push(breakie);
-            })
-        })
+        // let sortedBreakies = [];
+        // order.forEach( no => {
+        //     breakies.forEach( breakie => {
+        //         if (breakie._id.equals(no)) sortedBreakies.push(breakie);
+        //     })
+        // })
+        sortedBreakies = getSortedArray(order, breakies);
+        console.log(sortedBreakies);
         // @desc get distance
         // @google_api
-        let addrBreakies = sortedBreakies.map( breakies => { 
+        addrBreakies = sortedBreakies.map( breakies => { 
             return breakies.creator.location.coordinates[1].toString() + "," + breakies.creator.location.coordinates[0].toString() +"|" 
         }).join("");
         addrBreakies = addrBreakies.substring(0, addrBreakies.length - 1);
         console.log(addrBreakies);
         console.log(currentPos);
-        let distanceArray = [];
+        // let distanceArray = [];
         
         // @google_api
         axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
@@ -161,8 +220,15 @@ app.get("/", async (req, res) => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
             console.log(distanceArray);
-            let user = (res.locals.currentUser == null) ? null : JSON.stringify(res.locals.currentUser);
-            res.render("breakie/index", { distance: distanceArray, user, sellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
+            let prevValue = "";
+            sortedBreakies.forEach( (breakie, index) => {
+                if (breakie.creator.address != prevValue) 
+                    sellerDistanceArray.push(distanceArray[index]);
+                prevValue = breakie.creator.address;
+            })
+            console.log(sellerDistanceArray);
+            if (res.locals.currentUser != null) user = JSON.stringify(res.locals.currentUser);
+            res.render("breakie/index", { distance: distanceArray, sellerDistance: sellerDistanceArray, user, sellers: sortedSellers, breakies: sortedBreakies, key: process.env.GOOGLE_API_KEY });
         } ).
         catch(err => console.log(err) );
     }

@@ -41,7 +41,7 @@
 <script src="https://cdn.jsdelivr.net/npm/algoliasearch@3/dist/algoliasearchLite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
 <script defer>
-    let currentPos, breakies, sellers, distance, hoverArray, currUser;
+    let currentPos, breakies, sellers, distance, hoverArray, currUser, sellerDistance;
     /*
     * @desc this function gets the user's current location and makes a post request to the server
     */
@@ -61,8 +61,11 @@
     sellers = JSON.parse(document.getElementById("sellers").innerText);
 
     distance = "<%= distance %>".split(",");
+    sellerDistance = "<%= sellerDistance %>".split(",");
+    console.log("seller distance");
+    console.log(sellerDistance);
     hoverArray = JSON.parse(<%- JSON.stringify(hoverArray) %>);
-
+    console.log(distance);
     if ('<%- currUser %>' == "") currentPos = { lat: 1.3521, lng: 103.8198 };
     else {
         currUser = JSON.parse(JSON.stringify(<%- currUser %>));
@@ -77,12 +80,12 @@
         marker = new google.maps.Marker({ position: currentPos, map: map });
 
         for (const seller of sellers) {
-            distanceAway = (distance == undefined) ? seller.username : `${distance[index]}`;
+            // distanceAway = (distance == undefined) ? seller.username : `${distance[index]}`;
             sellerCoords = {lat: parseFloat(seller.location.coordinates[1]), lng: parseFloat(seller.location.coordinates[0])};
-
+            console.log(seller);
             marker = new google.maps.Marker({
                 icon: 'img/icon.svg', 
-                label: { text: distanceAway, color: "orange", fontWeight: "bold" },
+                label: { text: `${sellerDistance[index]}`, color: "orange", fontWeight: "bold" },
                 position: sellerCoords, map: map
             });
 
