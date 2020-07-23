@@ -2,6 +2,20 @@
 
 [breakie](http://breakie.herokuapp.com/) is a web based application that builds communities through sharing breakfasts.
 
+- [What is breakie?](#what-is-breakie)
+- [Who should use breakie?](#who-should-use-breakie)
+- [How does it work?](#how-does-it-work)
+- [Mock-ups](#mock-ups)
+- [Technologies used](#technologies-used)
+  * [Front-end](#front-end)
+  * [Backend](#backend)
+    + [socket.io](#socketio)
+    + [APIs](#apis)
+      - [[Google Maps](https://developers.google.com/maps/documentation)](#-google-maps--https---developersgooglecom-maps-documentation)
+      - [[Stripe Checkout](https://stripe.com/docs/payments/checkout)](#-stripe-checkout--https---stripecom-docs-payments-checkout)
+      - [[Algolia](https://www.algolia.com/doc/guides/building-search-ui/resources/ui-and-ux-patterns/in-depth/autocomplete/js/)](#-algolia--https---wwwalgoliacom-doc-guides-building-search-ui-resources-ui-and-ux-patterns-in-depth-autocomplete-js)
+- [References](#references)
+
 # What is breakie?
 The new generation of workers rarely eat breakfast, especially during the rush hours. On the other hand, many cooking enthusiasts often make too much breakfast and can't finish it alone. What if there was a way to close this gap? breakie hopes to solve this issue by providing a platform for busy bees and cook enthusiast to communicate and share. 
 
