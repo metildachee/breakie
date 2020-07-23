@@ -1,5 +1,6 @@
 <div class="mx-auto">
     <div>
+        <% let currUser = JSON.stringify(currentUser); %> 
         <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">To collect</a>
@@ -161,6 +162,8 @@
   </div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    let currUser = JSON.parse(JSON.stringify(<%- currUser %>));
+    console.log(currUser._id);
     // @sockets
     const socket = io();
     let sendMsgBtn = document.getElementById("sendMsgBtn");
@@ -171,7 +174,7 @@
     Array.from(document.getElementsByClassName('chat-btn')).forEach( element => {
         element.addEventListener('click', () => {
             otherUserId = element.childNodes[1].textContent;
-            socket.emit("openChat", otherUserId); // I want to open a chat with the other ID
+            socket.emit("openChat", { originId: currUser._id, targetId: otherUserId, msg: null }); // I want to open a chat with the other ID
         });
     });
 
@@ -180,7 +183,7 @@
         p.textContent = sendMsg.value;
         messageContainer.append(p);
         console.log(sendMsg);
-        socket.emit("sendMsg", { msg: sendMsg.value, id: otherUserId });
+        socket.emit("sendMsg", { msg: sendMsg.value, originid: currUser._id, targetId: otherUserId });
     })
 
     // we receive information if the other person is available
@@ -199,8 +202,9 @@
         stylingModal(msg.username);
         responseBtn.classList.remove("display-none");
         responseBtn.addEventListener('click', () => {
-            otherUserId = msg.id;
-            socket.emit("joinRoom", { id: msg.id, msg: "I have joined the room!" });
+            otherUserId = msg.originId;
+            console.log(otherUserId);
+            socket.emit("joinRoom", { originId: currUser._id, msg: null, targetId: otherUserId });
         })
     })
 

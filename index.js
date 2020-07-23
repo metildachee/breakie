@@ -16,7 +16,7 @@ const axios = require('axios');
 const algoliasearch = require('algoliasearch');
 
 const http = require('http');
-const { connected } = require('process');
+const { isNull, isNullOrUndefined } = require('util');
 const app = express();
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
@@ -101,38 +101,49 @@ app.use(function(req, res, next){
 //     }
 //     catch(err) { console.log(err); }
 // })
+    // @desc io stuff
+    let uniqueUser = {};
+    let connectedUsers = {}; // userId: socketId: isAvail:
+    io.on("connection", socket => {
 
-// @desc io stuff
-let user = {};
-let connectedUsers = {};
-let index = 0;
-io.on("connection", socket => {
+        if (uniqueUser._id == undefined) return;
+        if (!connectedUsers.hasOwnProperty(uniqueUser._id)) 
+            connectedUsers[uniqueUser._id] = { socketId: socket.id, isAvail: true }; 
+        console.log(connectedUsers);
 
-    if (!connectedUsers.hasOwnProperty(user._id)) 
-        connectedUsers[user._id] = socket.id; 
-    console.log(connectedUsers);
-
-    socket.on("openChat", otherUserId => {
-        Users.findById(otherUserId).
-        then( otherUser => {
-            let chatLog = `${otherUser.username} is unavailable`;
-            if (connectedUsers.hasOwnProperty(otherUserId)) {
-                chatLog = `${otherUser.username} is available.`;
-                io.to(connectedUsers[otherUserId]).emit("startChat", { username: user.username, id: user._id });
-                index++;
-            }
-            io.to(socket.id).emit("chatLog", chatLog);
+        socket.on("openChat", msgObj => {
+            Users.findById(msgObj.targetId).
+            then( otherUser => {
+                console.log("this is the person I'm trying to reach");
+                console.log(otherUser);
+                console.log("this is me");
+                console.log(msgObj.originId);
+                let chatLog = `${otherUser.username} is unavailable`;
+                if (!isNullOrUndefined(connectedUsers[msgObj.targetId]) || !connectedUsers[msgObj.targetId].isAvail) {
+                    chatLog = `${otherUser.username} is available.`;
+                    Users.findById(msgObj.originId).
+                    then( currUser => {
+                        connectedUsers[msgObj.originId].isAvail = false;
+                        io.to(connectedUsers[msgObj.targetId].socketId).emit("startChat", 
+                            { username: currUser.username, originId: currUser._id });
+                    }).
+                    catch(err => console.log(err))
+                }
+                io.to(socket.id).emit("chatLog", chatLog);
+            }).
+            catch(err => console.log(err))
         })
-    })
 
-    socket.on("joinRoom", obj => {
-        console.log(user.username + " successfully joined room");
-        io.to(connectedUsers[obj.id]).emit("receiveMsg", { id: user._id, username: user.username });
-    })
+        socket.on("joinRoom", obj => {
+            console.log("someone joined the room");
+            connectedUsers[obj.originId].isAvail = false;
+            // io.to(connectedUsers[obj.targetId]).emit("receiveMsg", 
+            //     { id: uniqueUser._id, username: uniqueUser.username });
+        })
 
-    socket.on("sendMsg", msg  => {
-        io.to(connectedUsers[msg.id]).emit("receiveMsg", msg.msg);
-    })
+        socket.on("sendMsg", msg  => {
+            io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", msg.msg );
+        })
 })
 
 function getKeyByValue(connectedUsers, userId) {
@@ -156,7 +167,7 @@ function getSortedArray(orderArray, jumbledArray) {
 app.get("/", async (req, res) => {
     res.locals.atHomePage = true;
     let currentPos = {};
-    user = req.user;
+    uniqueUser = req.user;
     if (req.user == undefined) currentPos = { lng: 103.8198, lat: 1.3521 };
     else currentPos = { lat: req.user.location.coordinates[1], lng: req.user.location.coordinates[0] };
     
