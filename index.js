@@ -157,7 +157,7 @@ app.get("/", async (req, res) => {
                 origins:currentPos.lat+","+currentPos.lng,
                 destinations:addrBreakies, 
                 mode: "walking|bicyling|bus",
-                key: process.env.GOOGLE_API_KEY
+                key: process.env.GOOGLE_SERVER_KEY
             }
         }).
         then( data => {
@@ -176,7 +176,7 @@ app.get("/", async (req, res) => {
                 sellerDistance: sellerDistanceArray, 
                 user, sellers: sortedSellers, 
                 breakies: sortedBreakies, 
-                key: process.env.GOOGLE_SERVER_KEY
+                key: process.env.GOOGLE_API_KEY
             });
         } ).
         catch(err => console.log(err) );
