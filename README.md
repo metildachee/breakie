@@ -40,6 +40,8 @@ Please see <a href="https://www.figma.com/file/v3kEtgMjBub29EzJlEfG8N/combined" 
 ### socket.io
 For chatting between busy bees and cook enthusiasts.
 
+<img src="public/img/chat.gif">
+
 ### APIs
 #### Google Maps
 Used for geocoding, distance matrix, map visualisation.
