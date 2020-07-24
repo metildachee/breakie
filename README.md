@@ -49,7 +49,7 @@ The new generation of workers rarely eat breakfast, especially during the rush h
 ## Order life cycle
 
 | Tag     | Description | Initiated by |
-| ----------- | ----------- |
+| ----------- | ----------- | -------|
 | Completed  | The standard completion of life cycle. This can be initiated by either the buyer or cook enthusiast. | Buyer and cook enthusiast |
 | Cancelled  | Should the buyer be unable to pick up the order, the buyer can cancel the order. This leads to completion of the life cycle as well. This can only be initiated by the buyer. | Buyer |
 | Unlisted       | Should the cook enthusiast unlist any of the items while an order is still open, the order will be labelled as unlisted. Unlisting a breakie will not affect past orders. However, a chat is required to close the life cycle. | Cook enthusiast |
