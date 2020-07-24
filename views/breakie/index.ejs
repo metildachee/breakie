@@ -43,9 +43,7 @@
 <script src="/js/script.js"></script>
 <script defer>
     let currentPos, breakies, sellers, distance, hoverArray, currUser, sellerDistance;
-    /*
-    * @desc this function gets the user's current location and makes a post request to the server
-    */
+
     // (function getCurrentLocation() {
     //     if (!navigator.geolocation) return;
     //     navigator.geolocation.getCurrentPosition( 
@@ -70,7 +68,6 @@
         document.getElementById("login-prompt").classList.add("display-none");
     }
 
-    // @desc inits the map
     function initMap() {       
         let index = 0, map, contentString, distanceAway, sellerCoords;
 
@@ -118,7 +115,6 @@
             if (status == "OK") document.getElementById("currentAddr").textContent = results[1].formatted_address;
     })}
 
-    // @desc algolia
     const client = algoliasearch('73KCNG918X', 'ca6e613de216883f20c2f6a51675b9bb');
     const breakie = client.initIndex('breakie');
     autocomplete(

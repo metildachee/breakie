@@ -30,6 +30,18 @@ The new generation of workers rarely eat breakfast, especially during the rush h
 # How does it work?
 Busy bees can visit the site to see what's cooking near them, they are interested, they can purchase it with a minimal fee. Cooking enthusiasts can visit the site to share what they're cooking for the day.
 
+| Non-registered     | Registered |
+| ----------- | ----------- |
+| View breakies  | View breakies |
+| Search breakies   | Search breakies |
+| View published users       | View published users |
+|  | Create breakies  |
+|  | Edit breakies  |
+|  | Delete breakies  |
+| | Place orders  |
+|  | Cancel orders  |
+|  | Chat to resolve problems  |
+
 # Mock-ups
 <img src="https://raw.githubusercontent.com/metildachee/breakie/master/public/img/homepage.jpg?token=APQA23UWSJNPAIXXXQZ33FK7ELPNW">
 
