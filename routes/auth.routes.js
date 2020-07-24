@@ -19,10 +19,11 @@ router.post("/register", async (req, res) => {
         axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
             params: {
                 address: req.body.address,
-                key: process.env.GOOGLE_API_KEY
+                key: process.env.GOOGLE_SERVER_KEY
             }
         }).
         then( value => {
+            console.log(value);
             let location = value.data.results[0].geometry.location;
             const coordinates = { type: "Point", coordinates: [location.lng, location.lat] };
             Users.findByIdAndUpdate(user._id, { location: coordinates }).
