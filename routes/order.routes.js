@@ -36,13 +36,10 @@ router.post("/done/:id", async (req, res) => {
 router.get("/cancel/:id", async (req, res) => {
     res.locals.atHomePage = false;
     try {
-        // and we will set cancelled variable to true 
         let order = await Orders.findByIdAndUpdate(req.params.id, { cancelled: true });
 
-        // we will resume the quantities
         for (let i = 0; i < order.items.length; i++) {
             let item = order.items[i];
-            console.log(item);
             await Breakies.findByIdAndUpdate(item.breakie, { $inc: { qty: item.qty }} );
         }
         res.redirect("/order");

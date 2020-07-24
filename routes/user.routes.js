@@ -29,7 +29,6 @@ router.get('/show/:id', (req, res) => {
         populate: { path: "ingredients", model: "Ingredient" }
     }).
     then( user => {
-        console.log(user);
         res.render("user/show", { user, key: process.env.GOOGLE_API_KEY });
     }).
     catch( err => console.log(err) );

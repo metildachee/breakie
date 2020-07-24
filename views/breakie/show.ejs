@@ -49,6 +49,7 @@
     let qty = document.getElementById("qty");
     let totalPrice = document.getElementById("totalPrice");
     let beautifulOrange = "#ff8e3c";
+    
     // @desc updates the price
     qty.addEventListener('change', updateTotalPrice => {
         totalPrice.textContent = parseInt(event.target.value) * parseInt(document.getElementById("price").textContent);        

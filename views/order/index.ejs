@@ -164,25 +164,45 @@
   </div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    // @desc inits
     let currUser = JSON.parse(JSON.stringify(<%- currUser %>));
-
     const socket = io();
     let sendMsgBtn = document.getElementById("sendMsgBtn");
     let sendMsg = document.getElementById("message-text");
     let responseBtn = document.getElementById("modalEvent");
     let messageContainer = document.getElementById("msgContainer");
+    let otherUserId = "";
+
+    // @desc event handlers
     document.getElementById("closeBtn").addEventListener('click', closeConnection);
     document.getElementById("dismissBtn").addEventListener('click', closeConnection);
-    let otherUserId = "";
 
     Array.from(document.getElementsByClassName('chat-btn')).forEach( element => {
         element.addEventListener('click', () => {
             otherUserId = element.childNodes[1].textContent;
-            console.log(sendMsg);
-            sendMsg.value = "";
+            sendMsg.value = ""; // try to reset the textMsg box to blank
             socket.emit("openChat", { originId: currUser._id, targetId: otherUserId, msg: null }); 
         });
     });
+
+    // @desc helper functions + io functions
+    stylingModal = (username) =>  document.getElementById("otherUser").textContent = "@" + username;
+    updateHeader = (msg) => document.getElementById("status").textContent = msg;
+
+    function appendMessage(msg) {
+        let p = document.createElement("p");
+        if (msg.includes(":")) {
+            let span = document.createElement("span");
+            let span2 = document.createElement("span");
+            span.classList.add("bold");
+            span.textContent = msg.split(": ")[0] + ": ";
+            span2.textContent = msg.split(": ")[1];
+            p.append(span);
+            p.append(span2);
+        }
+        else p.textContent = msg;
+        messageContainer.append(p);
+    }
 
     function closeConnection() {
         socket.emit("leftChat", { originId: currUser._id, 
@@ -200,7 +220,7 @@
         });
     })
 
-    // we receive information if the other person is available
+    // @desc after a request is sent, chatLog is the event that the server will respond to the client
     socket.on("chatLog", msgFromServer => {
         if (msgFromServer.includes("unavailable")) {
             Swal.fire({
@@ -209,13 +229,12 @@
             } );
         }
         else {
-            let username = msgFromServer.split(" ")[0];
-            stylingModal(username);
+            stylingModal(msgFromServer.split(" ")[0]);
             document.getElementById("modalEvent").click();
         }
     })
 
-    // we receive a request to start chat, we will display a button
+    // @desc client receives a request to start chat, we will display a button
     socket.on("startChat", msg => {
         stylingModal(msg.username);
         responseBtn.classList.remove("display-none");
@@ -230,35 +249,9 @@
         })
     })
 
-    socket.on("updateHeader", msg => {
-        updateHeader(msg);
-    })
-
+    // @desc io eventListeners
+    socket.on("leftChat", msg => { appendMessage(msg); })
+    socket.on("updateHeader", msg => { updateHeader(msg); })
     socket.on("receiveMsg", msg => { appendMessage(msg); })
-
-    socket.on("leftChat", msg => {
-        let p = document.createElement("p");
-        p.textContent = msg;
-        messageContainer.append(p);
-    })
-
-    function stylingModal(username) {
-        document.getElementById("otherUser").textContent = "@" + username;
-    }
-
-    function appendMessage(msg) {
-        let p = document.createElement("p");
-        let span = document.createElement("span");
-        let span2 = document.createElement("span");
-        span.classList.add("bold");
-        span.textContent = msg.split(": ")[0] + ": ";
-        span2.textContent = msg.split(": ")[1];
-        p.append(span);
-        p.append(span2);
-        messageContainer.append(p);
-    }
-
-    function updateHeader(msg) {
-        document.getElementById("status").textContent = msg;
-    }
+    
 </script>

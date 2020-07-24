@@ -14,9 +14,7 @@ const bodyParser = require('body-parser');
 const MulterGridfsStorage = require('multer-gridfs-storage');
 const axios = require('axios');
 const algoliasearch = require('algoliasearch');
-
 const http = require('http');
-const { isNull, isNullOrUndefined } = require('util');
 const app = express();
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
@@ -104,10 +102,27 @@ app.use(function(req, res, next){
 
 // @desc io stuff
 let uniqueUser = {};
-let connectedUsers = {}; // userId: { socketId: isAvail: }
+let connectedUsers = {}; 
+
+/* 
+    connectedUsers: {
+        userId: {
+            socketId: String,
+            isAvail: Boolean
+        }
+    }
+
+    msgObj: {
+        msg: String,
+        targetId: String,
+        originId: String
+    }
+*/
+
 io.on("connection", socket => {
 
     if (uniqueUser._id == undefined) return;
+
     if (!connectedUsers.hasOwnProperty(uniqueUser._id)) 
         connectedUsers[uniqueUser._id] = { socketId: socket.id, isAvail: true }; 
     console.log(connectedUsers);
@@ -132,30 +147,29 @@ io.on("connection", socket => {
     })
 
     socket.on("updateHeader", obj => {
-        console.log("someone joined the room");
+        console.log("Someone has joined the room");
         connectedUsers[obj.originId].isAvail = false;
-        io.to(connectedUsers[obj.targetId].socketId).emit("updateHeader", `${obj.username} has entered the chat.` );
+        io.to(connectedUsers[obj.targetId].socketId).
+            emit("updateHeader", `${obj.username} has entered the chat.` );
     })
 
     socket.on("leftChat", msgObj => {
-        io.to(connectedUsers[msgObj.targetId].socketId).emit("leftChat", `${msgObj.originUsername} has left the chat.`);
+        io.to(connectedUsers[msgObj.targetId].socketId).
+            emit("leftChat", `${msgObj.originUsername} has left the chat.`);
         connectedUsers[msgObj.targetId].isAvail = true;
     })
 
-    socket.on("disconnect", () => connectedUsers = {} )
+    // **
+    socket.on("disconnect", () => connectedUsers = {})
+    // **
 
     socket.on("sendMsg", msg  => {
-        io.to(connectedUsers[msg.targetId].socketId).emit("receiveMsg", `${msg.username}: ${msg.msg}` );
+        io.to(connectedUsers[msg.targetId].socketId).
+            emit("receiveMsg", `${msg.username}: ${msg.msg}` );
     })
 })
 
-function getKeyByValue(connectedUsers, userId) {
-    return Object.keys(connectedUsers).find(key => connectedUsers[key] === userId);
-}
-
-
 // @desc routes that require gfs
-
 function getSortedArray(orderArray, jumbledArray) {
     let sortedArray = []
     orderArray.forEach( ordered => {
@@ -214,15 +228,17 @@ app.get("/", async (req, res) => {
             data.data.rows.forEach( row => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
-            // value
             prevValue = "";
             sortedBreakies.forEach( (breakie, index) => {
                 if (breakie.creator.address != prevValue) 
                     sellerDistanceArray.push(distanceArray[index]);
                 prevValue = breakie.creator.address;
             })
-            let newSortedArray = sortedSellers.shift();
+            
+            // **
+            sortedSellers.shift();
             console.log(newSortedArray);
+            // **
 
             if (res.locals.currentUser != null) user = JSON.stringify(res.locals.currentUser);
             res.render("breakie/index", { distance: distanceArray, 
@@ -230,7 +246,6 @@ app.get("/", async (req, res) => {
                 user, sellers: sortedSellers, 
                 breakies: sortedBreakies, 
                 key: process.env.GOOGLE_API_KEY
-                // mrow
             });
         } ).
         catch(err => console.log(err) );
@@ -243,12 +258,18 @@ app.post("/breakie/new", upload.single('file'), async (req, res) => {
     try {
         let breakie = await Breakies.create(req.body);
         
-        if (req.file == undefined) breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
-        else breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
+        if (req.file == undefined) 
+            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id });
+        else 
+            breakie = await Breakies.findByIdAndUpdate(breakie._id, { creator: req.user._id, image: req.file.filename });
+
         await Users.findByIdAndUpdate(req.user._id, { $push: { publishes: breakie._id }});
 
         await Breakies.SyncToAlgolia();
-        await Breakies.SetAlgoliaSettings({ searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] });
+        await Breakies.SetAlgoliaSettings({ 
+            searchableAttributes: ['name', 'desc', 'price', 'cuisine.type', 'creator', 'ingredients'] 
+        });
+
         res.redirect("/");
     }
     catch(err) { console.log(err); }
@@ -319,8 +340,6 @@ app.post("/search", async (req, res) => {
     }).
     catch( err => console.log(err) );
 })
-
-
 
 app.use("/auth", require("./routes/auth.routes.js"));
 app.use("/breakie", checkUser, require("./routes/breakie.routes.js"));

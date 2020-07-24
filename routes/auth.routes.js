@@ -23,16 +23,13 @@ router.post("/register", async (req, res) => {
             }
         }).
         then( value => {
-            console.log(value);
             let location = value.data.results[0].geometry.location;
             const coordinates = { type: "Point", coordinates: [location.lng, location.lat] };
             Users.findByIdAndUpdate(user._id, { location: coordinates }).
             then( user => { 
-                console.log(user);
                 res.redirect("/auth/login");
             }).
             catch( err => console.log(err) )
-            console.log(newUser);
             res.redirect("/auth/login");
         }).
         catch(err => console.log(err));
