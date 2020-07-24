@@ -77,7 +77,7 @@ For resolving purchase conflicts between busy bees and cook enthusiasts.
 #### Google Maps
 Used for geocoding, distance matrix, map visualisation.
 
-Breakies are displayed in increasing travel time from user's address. When hovered, the map markers highlights the associated breakies. When clicked, a window appears with the breakies of that cook enthusiast. This can be helpful for busy bees who might be more interested in travel time than dishes.
+Breakies are displayed in increasing travel time from user's address. When hovered, the map markers highlights the associated breakies. When clicked, a window appears with the breakies of that cook enthusiast. This can be helpful for buyers who might be more interested in travel time than dishes.
 
 <img src="public/img/maps.gif">
 
@@ -86,7 +86,7 @@ Used for payment.
 
 #### Algolia
 
-Used for real-time autocomplete and database search.
+Used for real-time autocomplete and database search. This allows searching by breakies' name, description, ingredients, cuisine type, cook enthusiast's username, address. Autocompletion also allows for typos and partial words. This can be helpful for potential buyers as there is a single source of entry and little confusion.
 
 <img src="public/img/search.gif">
 
