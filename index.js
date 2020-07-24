@@ -214,6 +214,7 @@ app.get("/", async (req, res) => {
             data.data.rows.forEach( row => {
                 row.elements.forEach( value => { distanceArray.push(value.duration.text); })
             })
+            // value
             prevValue = "";
             sortedBreakies.forEach( (breakie, index) => {
                 if (breakie.creator.address != prevValue) 
