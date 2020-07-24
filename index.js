@@ -101,7 +101,8 @@ app.use(function(req, res, next){
 //     }
 //     catch(err) { console.log(err); }
 // })
-    // @desc io stuff
+
+// @desc io stuff
 let uniqueUser = {};
 let connectedUsers = {}; // userId: socketId: isAvail:
 io.on("connection", socket => {
@@ -219,6 +220,9 @@ app.get("/", async (req, res) => {
                     sellerDistanceArray.push(distanceArray[index]);
                 prevValue = breakie.creator.address;
             })
+            let newSortedArray = sortedSellers.shift();
+            console.log(newSortedArray);
+
             if (res.locals.currentUser != null) user = JSON.stringify(res.locals.currentUser);
             res.render("breakie/index", { distance: distanceArray, 
                 sellerDistance: sellerDistanceArray, 
