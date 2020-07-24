@@ -86,7 +86,9 @@ Used for payment.
 
 #### Algolia
 
-Used for real-time autocomplete and database search. This allows searching by breakies' name, description, ingredients, cuisine type, cook enthusiast's username, address. Autocompletion also allows for typos and partial words. This can be helpful for potential buyers as there is a single source of entry and little confusion.
+Used for real-time autocomplete and database search. 
+
+This allows searching by breakies' name, description, ingredients, cuisine type, cook enthusiast's username, address. Autocompletion also allows for typos and partial words. This can be helpful for potential buyers as there is a single source of entry and little confusion.
 
 <img src="public/img/search.gif">
 
