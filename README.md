@@ -28,26 +28,38 @@ The new generation of workers rarely eat breakfast, especially during the rush h
 | Know your neighbours | Know your neighbours  |
 
 # How does it work?
-Busy bees can visit the site to see what's cooking near them, they are interested, they can purchase it with a minimal fee. Cooking enthusiasts can visit the site to share what they're cooking for the day.
+- Buyers can visit the site to see what's cooking near them, they are interested, they can purchase it with a minimal fee. 
+- Cooking enthusiasts can visit the site to share what they're cooking for the day.
 
-| Non-registered     | Registered |
+## Who can do what?
+| Registered     | Non-registered |
 | ----------- | ----------- |
 | View breakies  | View breakies |
 | Search breakies   | Search breakies |
 | View published users       | View published users |
-|  | Create breakies  |
-|  | Edit breakies  |
-|  | Delete breakies  |
-| | Place orders  |
-|  | Cancel orders  |
-|  | Chat to resolve problems  |
+|  Create breakies  |  |
+|  Edit breakies |   |
+|  Delete breakies |   |
+| Place orders |   |
+|  Cancel orders |   |
+|  Chat to resolve problems |   |
+
+## Order life cycle
+1. Completed
+The standard completion of life cycle. This can be initiated by either the buyer or cook enthusiast.
+
+2. Cancelled
+Should the buyer be unable to pick up the order, the buyer can cancel the order. This leads to completion of the life cycle as well. This can only be initiated by the buyer.
+
+3. Unlisted
+Should the cook enthusiast unlist any of the items while an order is still open, the order will be labelled as unlisted. Unlisting a breakie will not affect past orders. However, a chat is required to close the life cycle.
 
 # Mock-ups
 <img src="https://raw.githubusercontent.com/metildachee/breakie/master/public/img/homepage.jpg?token=APQA23UWSJNPAIXXXQZ33FK7ELPNW">
 
 <img src="https://github.com/metildachee/breakie/blob/master/public/img/orders.png?raw=true">
 
-Please see <a href="https://www.figma.com/file/v3kEtgMjBub29EzJlEfG8N/combined" target="_blank">here</a> for full wireframe.
+See <a href="https://www.figma.com/file/v3kEtgMjBub29EzJlEfG8N/combined" target="_blank">here</a> for more mockups.
 
 # Technologies used
 ## Front-end
