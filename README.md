@@ -84,6 +84,8 @@ Breakies are displayed in increasing travel time from user's address. When hover
 #### Stripe Checkout
 Used for payment.
 
+<img src="public/img/card.gif">
+
 #### Algolia
 
 Used for real-time autocomplete and database search. 

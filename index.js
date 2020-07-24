@@ -104,7 +104,7 @@ app.use(function(req, res, next){
 
 // @desc io stuff
 let uniqueUser = {};
-let connectedUsers = {}; // userId: socketId: isAvail:
+let connectedUsers = {}; // userId: { socketId: isAvail: }
 io.on("connection", socket => {
 
     if (uniqueUser._id == undefined) return;
